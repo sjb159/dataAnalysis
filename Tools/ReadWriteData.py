@@ -1,0 +1,67 @@
+'''
+Created on 19 Jul 2017
+
+@author: wvx67826
+'''
+import numpy as np
+import h5py    # HDF5 support
+
+class ReadWriteData():
+    def __init__(self):
+        self.metadata = []
+        self.data = []
+        self.nexusData = []
+        
+    def read_file(self, filename):
+        with  open(filename,'r') as f:
+            meta = True
+            tMeta = []
+            tData = []
+            for line in f:
+                tMeta.append(line)
+                if not meta:
+                    tData.append(line) 
+                if " &END" in line:
+                    meta = False
+            self.metadata = tMeta
+            self.data = tData
+    def get_meta_value(self, metaName):
+        for line in self.metadata:
+            if metaName in line:
+                return line.split("=",1)[1]
+    def get_data(self):
+        
+        return np.genfromtxt(self.data, names = True, delimiter = "\t")
+        #return ascii.read(self.data)
+
+    def read_nexus_data(self,folder, filename):
+        self.nexusData = h5py.File(str(folder)+ str(filename) + '.nxs',  "r")
+        return self.nexusData
+    
+    def get_nexus_meta(self, subBranch, nData = 0, mainBranch ="/entry1/before_scan"):
+        subBranch = "/"+subBranch+"/"+subBranch
+        if nData == 0:
+            nData = self.nexusData
+        return nData[mainBranch + subBranch].value
+    
+    def get_nexus_data(self, subBranch, nData = 0, mainBranch ="/entry1/instrument" ):
+        if nData == 0:
+            nData = self.nexusData       
+        return nData[mainBranch + subBranch].value
+    def get_scan_type(self, subBranch = "/scan_command", nData = 0, mainBranch ="/entry1" ):
+        if nData == 0:
+            nData = self.nexusData           
+        return nData[mainBranch + subBranch].value.split()[1]
+
+    def write_ascii(self, filename, names, data):
+        f = open(filename, 'w+')
+        for i in names:
+            f.write("%s \t" %i)
+        f.write("\n" )
+        for j in range (0,len(data[0])):
+            for k in range (0,len(data)):
+                f.write("%f \t" %data[k][j])
+               
+            f.write("\n" )
+        f.close()
+    

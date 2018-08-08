@@ -34,7 +34,7 @@ for i in scan:
     I.append(RD.get_data()["macr17"])
     print i
 
-q = A2Q.cal_qz(TH[0], TH[0], E[0])
+q = A2Q.cal_qz(TTH[0], TH[0], E[0])
 for i in range (0, len(I),4):
         
     dataFile = 'data/Ref_E' +"%s" %E[i]+"F %s" %field[i] +'_IrMn3_ordered.dat'
