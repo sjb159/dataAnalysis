@@ -36,14 +36,14 @@ write_ascii(self, filename, names, data)
         tools.write_ascii("test.dat",k,result)
     
 '''
+from ReadWriteData import ReadWriteData
+from DataReduction.AngleToQ import AngleToQ
 
-from Tools.ReadWriteData import ReadWriteData
-from Tools.AngleToQ import AngleToQ
 import numpy as np
 
-class Tools(ReadWriteData):
+class Tools(AngleToQ,ReadWriteData):
     def __init__(self):
-        #AngleToQ.__init__(self)
+        AngleToQ.__init__(self)
         ReadWriteData.__init__(self)
 
 

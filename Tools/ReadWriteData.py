@@ -2,6 +2,44 @@
 Created on 19 Jul 2017
 
 @author: wvx67826
+
+Read and write data. 
+
+For ascii format:
+Read_file(filename)
+    
+get_meta_value(self, metaName):
+
+def get_data(self):
+return ascii formate data
+
+Nexus format:
+
+read_nexus_data(self,folder, filename):
+
+get_nexus_meta(self, subBranch, nData = 0, mainBranch ="/entry1/before_scan"):
+retrun nexus meta data 
+
+get_nexus_data(self, subBranch, nData = 0, mainBranch ="/entry1/instrument" ):
+
+get_scan_type(self, subBranch = "/scan_command", nData = 0, mainBranch ="/entry1" ):
+get list of data 
+
+write_ascii(self, filename, names, data)
+    write data to file
+    file name = output file name
+    names are the name list for the column data
+    list of data 
+    example:
+        result = []
+        result.append(energy)
+        result.append(xas1)
+        result.append(xas2)
+        result.append(xmcd)
+        result.append(xmcd_ratio)
+        k = ["energy", "Cp", "cn","xmcd","xmcd_ratio"]
+        tools.write_ascii("test.dat",k,result)
+
 '''
 import numpy as np
 import h5py    # HDF5 support
