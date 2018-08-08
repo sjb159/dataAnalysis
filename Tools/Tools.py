@@ -37,36 +37,24 @@ write_ascii(self, filename, names, data)
     
 '''
 from ReadWriteData import ReadWriteData
-from DataReduction.AngleToQ import AngleToQ
-
+from DataReduction.DataCorrection import *
 import numpy as np
 
-class Tools(AngleToQ,ReadWriteData):
+class Tools(AngleToQ, ReadWriteData, XasDataProcess,DataCorrection):
     def __init__(self):
         AngleToQ.__init__(self)
         ReadWriteData.__init__(self)
+        XasDataProcess.__init__(self)
+        DataCorrection.__init__(self)
 
 
 #correlation coefficient calculation
     def corr_r(self, im1, im2):
         aIm1 = np.mean(im1)
         bIm2 = np.mean(im2)
-         
+        
         c_vect = (im1-aIm1)*(im2-bIm2)
         d_vect = (im1-aIm1)**2
         e_vect = (im2-bIm2)**2
         return np.sum(c_vect)/float(np.sqrt(np.sum(d_vect)*np.sum(e_vect)))
-    
-    def norm_data(self,data1,data2):
-        return data1/data2
-    
-    def xas_corr(self, data1, data1lowCutOff = 0, data1highCutOff = 15, data1EndLowCutOff = -10, data1EndHighCutOff = -1):
-        #This subtract pre-edge and normalise to pro-edge
-        return (data1 - np.average(data1[data1lowCutOff:data1highCutOff]))/np.average(data1[data1EndLowCutOff:data1EndHighCutOff])
-    
-    def xmcd(self,data1,data2):
-        return data1-data2
-    
-    def xmcd_ratio(self, data1, data2):
-        return (data1-data2)/(data1+data2)    
     
