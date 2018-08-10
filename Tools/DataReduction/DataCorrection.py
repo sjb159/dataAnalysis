@@ -2,6 +2,27 @@
 Created on 8 Aug 2018
 
 @author: wvx67826
+
+XasDataProcess:
+
+xas_corr(self, data1, data1lowCutOff = 0, data1highCutOff = 15, data1EndLowCutOff = -10, data1EndHighCutOff = -1)
+    subtract background (average) before edge and normalise data to 1 after edge.
+
+xmcd(self,data1,data2)
+    return data1-data2
+    
+xmcd_ratio(self, data1, data2):
+    return (data1-data2)/(data1+data2)    
+
+AngleToQ:
+conver th tth to qz and qx
+
+DataCorrection:
+
+norm_data(self,data1,data2)  
+    normalise data 
+
+
 '''
 from numpy import average, cos, sin, deg2rad, pi
 class XasDataProcess():

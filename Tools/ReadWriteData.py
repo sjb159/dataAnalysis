@@ -43,6 +43,7 @@ write_ascii(self, filename, names, data)
 '''
 import numpy as np
 import h5py    # HDF5 support
+from PIL import Image
 
 class ReadWriteData():
     def __init__(self):
@@ -88,8 +89,9 @@ class ReadWriteData():
         return nData[mainBranch + subBranch].value
     def get_scan_type(self, subBranch = "/scan_command", nData = 0, mainBranch ="/entry1" ):
         if nData == 0:
-            nData = self.nexusData           
-        return nData[mainBranch + subBranch].value.split()[1]
+            nData = self.nexusData
+        temp = nData[mainBranch + subBranch].value.split()[1]          
+        return temp
 
     def write_ascii(self, filename, names, data):
         f = open(filename, 'w+')
@@ -98,8 +100,15 @@ class ReadWriteData():
         f.write("\n" )
         for j in range (0,len(data[0])):
             for k in range (0,len(data)):
-                f.write("%f \t" %data[k][j])
+                f.write("%.8g \t" %data[k][j])
                
             f.write("\n" )
         f.close()
     
+    def get_nexus_tiff(self, subBranch = "/pixistiff/image_data", nData = 0, mainBranch ="/entry1" ):
+        if nData == 0:
+            nData = self.nexusData
+        temp = "//data" +nData[mainBranch + subBranch].value[0].split('/dls')[1]
+        im = Image.open(temp)
+        return im
+        
