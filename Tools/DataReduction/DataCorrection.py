@@ -25,14 +25,27 @@ norm_data(self,data1,data2)
 
 '''
 from numpy import average, cos, sin, deg2rad, pi
+from numpy.polynomial.polynomial import polyval, polyfit 
 class XasDataProcess():
     def __init__(self):
         pass
     
-    def xas_corr(self, data1, data1lowCutOff = 0, data1highCutOff = 15, data1EndLowCutOff = -10, data1EndHighCutOff = -1):
+    def xas_corr(self, data1 , data1lowCutOff = 10, linFit = False,
+                  data1highCutOff = 30, data1EndLowCutOff = -10, data1EndHighCutOff = -1):
         #This subtract pre-edge and normalise to pro-edge
-        return (data1 - average(data1[data1lowCutOff:data1highCutOff]))/average(data1[data1EndLowCutOff:data1EndHighCutOff])
-    
+        k = DataCorrection()
+        if (linFit == True):
+            dataXStart = range (0, data1highCutOff-data1lowCutOff)
+            mc =k.poly_fit(dataXStart, data1[data1lowCutOff:data1highCutOff])
+            xStart = range(len(data1))
+            cStart=  k.gen_poly(xStart, mc)
+            corBackData = data1- cStart  
+            return corBackData/average(corBackData[data1EndLowCutOff:data1EndHighCutOff])      
+        else:
+            corBackData = (data1 - average(data1[data1lowCutOff:data1highCutOff]))
+            return corBackData /average(corBackData[data1EndLowCutOff:data1EndHighCutOff])
+           
+        
     def xmcd(self,data1,data2):
         return data1-data2
     
@@ -55,3 +68,8 @@ class DataCorrection():
         pass        
     def norm_data(self,data1,data2):
         return data1/data2
+    def poly_fit(self,dataX,dataY, deg = 1):
+        return polyfit(dataX, dataY, deg)
+    def gen_poly(self, x, mc):
+        return polyval(x, mc)
+
