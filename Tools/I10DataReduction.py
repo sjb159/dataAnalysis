@@ -11,6 +11,42 @@ xas_pair_processing( self, data, folder, outFileName = "No output", metaOutFileN
                             detectors =[17,18,19], xasStartAverage = [10,40], xasEndAverage = [-120,-105]):
 
 
+run example:
+dr = I10DataReduction()
+data = [481665,481679,481693,481707] 
+an array contains the first scan number for each pair
+
+folder = "S:\Science\I10\Experiment\Fe2O3_BTO\Cm19658-3\i10-"
+is the input file folder
+
+output = "C:/Users/wvx67826/Desktop/Fe2o3Bto/escan_th_3_15/"
+is the output file folder
+#output = "No output" 
+
+metaOutFileName = [ "emecy1", "sx","pgm_energy"]
+meta is an array of the names that meta data will be added to the file name
+
+nextPol is number of scan to skip between the two pol scans.
+
+showPlot = False, show data in matlabplot
+
+linFit = False, it is fit the background with a straight line rather than just average
+pol1= "circ_pos", pol2 = "circ_neg", 
+first and second scan pol
+
+mirrorDrain = "16", the monitor channel
+
+detectors =[17,18,19], array of detectors data to be loaded
+xasStartAverage = [10,40], range of data to average for background subtraction
+xasEndAverage = [-120,-105] range of data to averge for normalisation
+
+
+refl_pair_processing( self, data, folder, outFileName = "No output", metaOutFileName =[""], 
+                            pol1 = "idu_circ_pos", nextPol = 1,showPlot = False, linFit = False,
+                            axis= "tth", mirrorDrain = "16", detectors =["refl","18","19"],
+                            xasStartAverage = [-50,-1], xasEndAverage = [0,1]):
+refl pair works the same way as xas with pol2 replaced with axis which replace energy with tth on x aixs and calculate Q
+
 '''
 from Tools import Tools
 import matplotlib.pyplot as plt
@@ -18,9 +54,11 @@ from numpy import interp
 class I10DataReduction():
     def __init__(self):
         self.tools = Tools()
+#function that read two data set and perform normalization
     def xas_pair_processing( self, data, folder, outFileName = "No output", metaOutFileName =[""], 
-                            nextPol = 1, showPlot = False, linFit = False, pol1= "idu_circ_pos", pol2 = "idu_circ_neg", mirrorDrain = "16",
-                            detectors =[17,18,19], xasStartAverage = [10,40], xasEndAverage = [-120,-105]):
+                            nextPol = 1, showPlot = False, linFit = False, pol1= "idu_circ_pos",
+                            pol2 = "idu_circ_neg", mirrorDrain = "16", detectors =[17,18,19],
+                            xasStartAverage = [10,40], xasEndAverage = [-120,-105]):
         
         for edata in data:
             result = []        
@@ -31,6 +69,8 @@ class I10DataReduction():
                 pol = "/egy_g_%s_energy/pgm_energy" %pol2
                 temp = self.__loadCorrectedData(edata+nextPol, folder,pol,mirrorDrain, detectors, detType,
                                                 linFit, xasStartAverage,xasEndAverage)
+#LoadCorrected Data return two values, first an array of the data and the data name. 
+#e.g. temp[0] [0]= array of data for x follow by number of detector temp[0][1:], temp[1] is the data name
                 result = temp[0]
                 dataName = (temp[1])
                 pol = "/egy_g_idu_%s_energy/pgm_energy" %pol1
@@ -39,6 +79,7 @@ class I10DataReduction():
                 result = result + temp[0]
                 dataName = dataName + temp[1]
                 x2 = temp[0][0]
+                
 
             else: 
                 pol = "/egy_g_%s_energy/pgm_energy" %pol1
@@ -53,22 +94,25 @@ class I10DataReduction():
                 dataName = dataName + temp[1]
                 x2 = temp[0][0]
 
+#Do XMCD calculation 
             for k in range(0,len(detectors)):
                 result.append( self.tools.xmcd(result[3+k*2], interp(result[0], x2, result[5+len(detectors)*2+k*2])))
                 dataName = dataName +["xmcd det%.i " %(detectors[k])]
                 result.append( self.tools.xmcd_ratio(result[3+k*2], interp(result[0], x2, result[5+len(detectors)*2+k*2])))
                 dataName = dataName +["xmcd ratio det%.i " %(detectors[k])]
-            
+        
             if showPlot:
                 self.__plot_data(result,detectors,detType)
                 
             if outFileName != "No output":
-                self.__saveData(metaOutFileName, edata,outFileName, dataName, result)
+                scanType = "escan"
+                self.__saveData(scanType, metaOutFileName, edata,outFileName, dataName, result)
 
-            
+#    
     def refl_pair_processing( self, data, folder, outFileName = "No output", metaOutFileName =[""], 
-                            pol1 = "idu_circ_pos", nextPol = 1,showPlot = False, linFit = False, axis= "th", mirrorDrain = "16",
-                            detectors =["refl","18","19"], xasStartAverage = [-50,-1], xasEndAverage = [0,-1]):
+                            pol1 = "idu_circ_pos", nextPol = 1,showPlot = False, linFit = False,
+                            axis= "tth", mirrorDrain = "16", detectors =["refl","18","19"],
+                            xasStartAverage = [-50,-1], xasEndAverage = [0,1]):
         for edata in data:
             result = []        
             dataName = []  
@@ -78,39 +122,47 @@ class I10DataReduction():
             if (pol1 =="idu_circ_neg" or pol1 == "idu_lin_ver"):
                 temp = self.__loadCorrectedData(edata, folder,pol,mirrorDrain, detectors,detType,
                                                 linFit, xasStartAverage,xasEndAverage)
+#LoadCorrected Data return two values, first an array of the data and the data name. 
+#e.g. temp[0] [0]= array of data for x follow by number of detector temp[0][1:], temp[1] is the data name
                 result = temp[0]
+                x1 = temp[0][0]
                 dataName = (temp[1])
                 temp = self.__loadCorrectedData(edata+nextPol, folder, pol,mirrorDrain, detectors,detType,
                                     linFit, xasStartAverage,xasEndAverage)
                 result = result + temp[0]
                 dataName = dataName + temp[1]
                 x2 = temp[0][0]
+                
             else:
                 temp = self.__loadCorrectedData(edata+nextPol, folder,pol,mirrorDrain, detectors,detType,
                                                 linFit, xasStartAverage,xasEndAverage)
                 result = temp[0]
+                x1 = temp[0][0]
                 dataName = (temp[1])
                 temp = self.__loadCorrectedData(edata, folder, pol,mirrorDrain, detectors,detType,
                                     linFit, xasStartAverage,xasEndAverage)
                 result = result + temp[0]
                 dataName = dataName + temp[1]
                 x2 = temp[0][0]
-        
-        
+                print x2
             for k in range(0,len(detectors)):
                 
                 result.append(self.tools.xmcd(result[3+k*2], interp(result[0], x2, result[5+len(detectors)*2+k*2])))
                 dataName = dataName +["xmcd det%s " %(detectors[k])]
                 result.append(self.tools.xmcd_ratio(result[3+k*2], interp(result[0], x2, result[5+len(detectors)*2+k*2])))
                 dataName = dataName +["xmcd ratio det%s " %(detectors[k])]
+            
             if showPlot:
                 self.__plot_data(result,detectors,detType)
-                
-            if outFileName != "No output":
-                self.__saveData(metaOutFileName, edata,outFileName, dataName, result)
-
+           
+            q = self.tools.cal_qz(x1, x1/2, self.tools.get_nexus_meta("pgm_energy"))
+            dataName.insert(0, "q")
+            result.insert(0, q)    
             
-        
+            if outFileName != "No output":
+                scanType = "refl"
+                self.__saveData(scanType, metaOutFileName, edata,outFileName, dataName, result)
+
     def meta_name_string(self, meta_name):
         full_meta_name = ""
         for i in meta_name:
@@ -134,11 +186,11 @@ class I10DataReduction():
             plt.ylabel("XMCD%s" %detectors[i])
             plt.plot(data[0],data[len(data)-len(detectors)*2+i*2])
         plt.show()
-    def __saveData(self, metaOutFileName, edata,outFileName, dataName, result):
+    def __saveData(self, scanType, metaOutFileName, edata,outFileName, dataName, result):
             if metaOutFileName [0] != "":
-                fName = outFileName +"escan_%s%s.dat" %(edata,self.meta_name_string(metaOutFileName))
+                fName = outFileName +"%s_%s%s.dat" %(scanType, edata,self.meta_name_string(metaOutFileName))
             else:
-                fName = outFileName +"escan_%s.dat" %edata 
+                fName = outFileName +"%s_%s.dat" %(scanType, edata) 
             self.tools.write_ascii(fName,dataName,result)
         
     def __loadCorrectedData(self, data, folder,pol1,mirrorDrain, detectors, detType, linFit, xasStartAverage,xasEndAverage):
