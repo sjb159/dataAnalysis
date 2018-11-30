@@ -26,6 +26,7 @@ norm_data(self,data1,data2)
 '''
 from numpy import average, cos, sin, deg2rad, pi
 from numpy.polynomial.polynomial import polyval, polyfit 
+from scipy.optimize import curve_fit
 class XasDataProcess():
     def __init__(self):
         pass
@@ -45,7 +46,23 @@ class XasDataProcess():
             corBackData = (data1 - average(data1[data1lowCutOff:data1highCutOff]))
             return corBackData /average(corBackData[data1EndLowCutOff:data1EndHighCutOff])
            
-        
+    
+    def xref_corr(self, data1 , data1lowCutOff = 10, linFit = False,
+                  data1highCutOff = 30, data1EndLowCutOff = -10, data1EndHighCutOff = -1):
+        #This subtract pre-edge and normalise to pro-edge
+        k = DataCorrection()
+        if (linFit == True):
+            dataXStart = range (0, data1highCutOff-data1lowCutOff)
+            mc =k.poly_fit(dataXStart, data1[data1lowCutOff:data1highCutOff])
+            xStart = range(len(data1))
+            cStart=  k.gen_poly(xStart, mc)
+            corBackData = data1- cStart  
+            return corBackData/average(corBackData[data1EndLowCutOff:data1EndHighCutOff])      
+        else:
+            corBackData = (data1)
+            return corBackData /average(corBackData[data1EndLowCutOff:data1EndHighCutOff])
+
+            
     def xmcd(self,data1,data2):
         return data1-data2
     
@@ -72,4 +89,8 @@ class DataCorrection():
         return polyfit(dataX, dataY, deg)
     def gen_poly(self, x, mc):
         return polyval(x, mc)
-
+    def drain_ref(self,theta, absLen, eeLen, c):
+        return (absLen/sin(theta))/((absLen/sin(theta))+1.0/eeLen) + c
+    def fit_drain_ref(self,dataX,dataY):
+        return curve_fit(self.drain_ref,dataX,dataY)
+    

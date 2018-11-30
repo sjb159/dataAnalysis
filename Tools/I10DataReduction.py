@@ -128,23 +128,23 @@ class I10DataReduction():
                 x1 = temp[0][0]
                 dataName = (temp[1])
                 temp = self.__loadCorrectedData(edata+nextPol, folder, pol,mirrorDrain, detectors,detType,
-                                    linFit, xasStartAverage,xasEndAverage)
+                                    linFit, xasStartAverage,xasEndAverage,scanType = "ref")
                 result = result + temp[0]
                 dataName = dataName + temp[1]
                 x2 = temp[0][0]
                 
             else:
                 temp = self.__loadCorrectedData(edata+nextPol, folder,pol,mirrorDrain, detectors,detType,
-                                                linFit, xasStartAverage,xasEndAverage)
+                                                linFit, xasStartAverage,xasEndAverage,scanType = "ref")
                 result = temp[0]
                 x1 = temp[0][0]
                 dataName = (temp[1])
                 temp = self.__loadCorrectedData(edata, folder, pol,mirrorDrain, detectors,detType,
-                                    linFit, xasStartAverage,xasEndAverage)
+                                    linFit, xasStartAverage,xasEndAverage,scanType = "ref")
                 result = result + temp[0]
                 dataName = dataName + temp[1]
                 x2 = temp[0][0]
-                print x2
+                
             for k in range(0,len(detectors)):
                 
                 result.append(self.tools.xmcd(result[3+k*2], interp(result[0], x2, result[5+len(detectors)*2+k*2])))
@@ -193,7 +193,7 @@ class I10DataReduction():
                 fName = outFileName +"%s_%s.dat" %(scanType, edata) 
             self.tools.write_ascii(fName,dataName,result)
         
-    def __loadCorrectedData(self, data, folder,pol1,mirrorDrain, detectors, detType, linFit, xasStartAverage,xasEndAverage):
+    def __loadCorrectedData(self, data, folder,pol1,mirrorDrain, detectors, detType, linFit, xasStartAverage,xasEndAverage, scanType = "xas"):
         result = []        
         dataName = []
         self.tools.read_nexus_data(folder, data)
@@ -207,11 +207,18 @@ class I10DataReduction():
             result.append(self.tools.norm_data(self.tools.get_nexus_data(self.__detectorType(detType, k)),
                                           self.tools.get_nexus_data(self.__detectorType(detType, mirrorDrain))))
             dataName = dataName +["%s norm det%s " %(pol1,k)]
-            
-            result.append(self.tools.xas_corr(result[-1],linFit = linFit, data1lowCutOff = xasStartAverage[0],
-                                              data1highCutOff = xasStartAverage[1],
-                                              data1EndLowCutOff = xasEndAverage[0],
-                                              data1EndHighCutOff = xasEndAverage[1]))
+            if scanType == "xas":
+                result.append(self.tools.xas_corr(result[-1],linFit = linFit, data1lowCutOff = xasStartAverage[0],
+                                                  data1highCutOff = xasStartAverage[1],
+                                                  data1EndLowCutOff = xasEndAverage[0],
+                                                  data1EndHighCutOff = xasEndAverage[1]))
+            if scanType == "ref":
+                result.append(self.tools.xref_corr(result[-1],linFit = linFit, data1lowCutOff = xasStartAverage[0],
+                                                  data1highCutOff = xasStartAverage[1],
+                                                  data1EndLowCutOff = xasEndAverage[0],
+                                                  data1EndHighCutOff = xasEndAverage[1]))
+            if scanType == "single": 
+                pass
             dataName = dataName +["%s corr det%s " %(pol1,k)]
     
         return  result, dataName
