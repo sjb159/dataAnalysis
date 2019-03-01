@@ -58,14 +58,14 @@ class I10DataReduction():
     def xas_pair_processing( self, data, folder, outFileName = "No output", metaOutFileName =[""], 
                             nextPol = 1, showPlot = False, linFit = False, pol1= "idu_circ_pos",
                             pol2 = "idu_circ_neg", mirrorDrain = "16", detectors =[17,18,19],
-                            xasStartAverage = [10,40], xasEndAverage = [-120,-105]):
+                            xasStartAverage = [10,40], xasEndAverage = [0,1]):
         
         for edata in data:
             result = []        
             dataName = []
             detType = "xas"
 #reversing the order of loading the data if the first scan is circ neg or lin ver
-            if pol1 =="idu_circ_neg" or pol1 == "idu_lin_ver":
+            if pol1 =="idd_circ_neg" or pol1 == "idd_lin_ver":
                 pol = "/egy_g_%s_energy/pgm_energy" %pol2
                 temp = self.__loadCorrectedData(edata+nextPol, folder,pol,mirrorDrain, detectors, detType,
                                                 linFit, xasStartAverage,xasEndAverage)
@@ -73,7 +73,7 @@ class I10DataReduction():
 #e.g. temp[0] [0]= array of data for x follow by number of detector temp[0][1:], temp[1] is the data name
                 result = temp[0]
                 dataName = (temp[1])
-                pol = "/egy_g_idu_%s_energy/pgm_energy" %pol1
+                pol = "/egy_g_idd_%s_energy/pgm_energy" %pol1
                 temp = self.__loadCorrectedData(edata, folder, pol, mirrorDrain, detectors,  detType,
                                     linFit, xasStartAverage,xasEndAverage)
                 result = result + temp[0]

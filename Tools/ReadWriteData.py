@@ -78,7 +78,7 @@ class ReadWriteData():
         return self.nexusData
     
     def get_nexus_meta(self, subBranch, nData = 0, mainBranch ="/entry1/before_scan"):
-        subBranch = "/"+subBranch+"/"+subBranch
+        #subBranch = "/"+subBranch+"/"+subBranch
         if nData == 0:
             nData = self.nexusData
         return nData[mainBranch + subBranch].value
@@ -93,8 +93,12 @@ class ReadWriteData():
         temp = nData[mainBranch + subBranch].value.split()[1]          
         return temp
 
-    def write_ascii(self, filename, names, data):
+    def write_ascii(self, filename, names, data, metaName = False, meta = False ):
         f = open(filename, 'w+')
+        if metaName != False:
+            for i in range(len(metaName)):
+                f.write("%s = %5f" %(metaName[i],meta[i]))
+                f.write("\n" )
         for i in names:
             f.write("%s \t" %i)
         f.write("\n" )
