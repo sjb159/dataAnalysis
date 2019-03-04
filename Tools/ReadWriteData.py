@@ -108,6 +108,39 @@ class ReadWriteData():
                
             f.write("\n" )
         f.close()
+    def nexux2ascii(self,outPutFilename):
+        k = self.nexusData
+        metaData = []
+        data = []
+        names = []
+        for key in k["entry1/before_scan/"]:
+            meta = "entry1/before_scan/%s" %(key)
+            for key1 in k[meta]:
+                meta1  = meta +"/%s" %key1
+                metaData.append("%s = %s" %(key1,k[meta1].value ))
+        
+        for key in k["entry1/instrument/"]:
+            meta = "entry1/instrument/%s" %(key)
+            if key == "monochromator" or key == "name" or key == "source":
+                print key
+            else:
+                for key1 in k[meta]:
+        
+                    meta1  = meta +"/%s" %key1
+                    names.append(key1)
+                    data.append(k[meta1].value )
+        f = open(outPutFilename, 'w+')
+        for i in metaData:
+            f.write("%s\n" %i)   
+        for i in names:
+            f.write("%s \t" %i)
+        f.write("\n" )
+        for j in range (0,len(data[0])):
+            for k in range (0,len(data)):
+                f.write("%.8g \t" %data[k][j])
+            f.write("\n" )
+        f.close()
+        
     
     def get_nexus_tiff(self, subBranch = "/pixistiff/image_data", nData = 0, mainBranch ="/entry1" ):
         if nData == 0:
