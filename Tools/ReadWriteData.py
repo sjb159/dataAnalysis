@@ -108,7 +108,7 @@ class ReadWriteData():
                
             f.write("\n" )
         f.close()
-    def nexux2ascii(self,outPutFilename):
+    def nexus2ascii(self,outPutFilename):
         k = self.nexusData
         metaData = []
         data = []
@@ -121,14 +121,17 @@ class ReadWriteData():
         
         for key in k["entry1/instrument/"]:
             meta = "entry1/instrument/%s" %(key)
-            if key == "monochromator" or key == "name" or key == "source":
-                print key
+            keylist =["monochromator","name","source","description","id", "type" ] 
+            if key in keylist:
+                pass
             else:
                 for key1 in k[meta]:
-        
-                    meta1  = meta +"/%s" %key1
-                    names.append(key1)
-                    data.append(k[meta1].value )
+                    if key1 in keylist:
+                        pass
+                    else:
+                        meta1  = meta +"/%s" %key1
+                        names.append(key1)
+                        data.append(k[meta1].value )
         f = open(outPutFilename, 'w+')
         for i in metaData:
             f.write("%s\n" %i)   
@@ -137,15 +140,22 @@ class ReadWriteData():
         f.write("\n" )
         for j in range (0,len(data[0])):
             for k in range (0,len(data)):
-                f.write("%.8g \t" %data[k][j])
+                f.write("%s \t" %data[k][j])
             f.write("\n" )
         f.close()
         
     
+    def get_nexus_image_filename(self, subBranch = "/pixistiff/image_data", nData = None, mainBranch ="/entry1" ):
+        if nData == None:
+            nData = self.nexusData
+        temp = nData[mainBranch + subBranch]
+        #im = Image.open(temp)
+        return temp
+    
     def get_nexus_tiff(self, subBranch = "/pixistiff/image_data", nData = 0, mainBranch ="/entry1" ):
         if nData == 0:
             nData = self.nexusData
-        temp = "//data" +nData[mainBranch + subBranch].value[0].split('/dls')[1]
-        im = Image.open(temp)
-        return im
+        temp = "//data" +nData[mainBranch + subBranch][0].split('/dls')[1]
+        #im = Image.open(temp)
+        return temp
         
