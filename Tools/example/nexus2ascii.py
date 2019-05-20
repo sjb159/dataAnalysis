@@ -14,7 +14,7 @@ def convertData(filename):
     filen = folder+ "i10-"
     if filename[0:4] == "i10-":
         filename = filename[4:-4] #cutting the file name to fit the read nexus
-    print filen
+    #print filen
     dr.read_nexus_data(filen,filename)
     fulloutputname = "%s%s.dat" %(output,filename)
     dr.nexus2ascii(fulloutputname)
@@ -37,8 +37,15 @@ if isinstance(scanNo, (list,)):
 
 if scanNo == folder:
     for filename in sorted(os.listdir(scanNo)):
-        if filename[-4:] == ".nxs": #filter out everything that is not data
-            convertData(filename) 
-            
+        tempFilename = "%s%s.dat" %(output,filename[:-4])  
+        exist = os.path.isfile(tempFilename)
+        #print tempFilename
+        if exist:
+            print tempFilename
+            pass #' do nothing'
+        else:
+            if filename[-4:] == ".nxs": #filter out everything that is not data
+                convertData(filename) 
+                
 
 

@@ -108,6 +108,7 @@ class ReadWriteData():
                
             f.write("\n" )
         f.close()
+
     def nexus2ascii(self,outPutFilename):
         k = self.nexusData
         metaData = []
