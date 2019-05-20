@@ -29,11 +29,11 @@ def convertData(filename):
 folder = "Z:\\2019\si19996-1\\"
 output = "C:\\Users\\wvx67826\\Desktop\\test data\\"
 scanNo = range (525683,525690)
-scanNo = folder
+#scanNo = folder
 
 if isinstance(scanNo, (list,)):
     for filename in scanNo:
-        convertData(filename )
+        convertData(str(filename) )
 
 if scanNo == folder:
     for filename in sorted(os.listdir(scanNo)):

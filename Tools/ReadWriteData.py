@@ -131,7 +131,8 @@ class ReadWriteData():
                         pass
                     else:
                         meta1  = meta +"/%s" %key1
-                        names.append(key1)
+                        tempName = "%s/%s" %(key, key1)
+                        names.append(tempName)
                         data.append(k[meta1].value )
         f = open(outPutFilename, 'w+')
         for i in metaData:
