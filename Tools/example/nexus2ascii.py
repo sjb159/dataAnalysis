@@ -37,7 +37,7 @@ if isinstance(scanNo, (list,)):
 
 if scanNo == folder:
     for filename in sorted(os.listdir(scanNo)):
-        tempFilename = "%s%s.dat" %(output,filename[:-4])  
+        tempFilename = "%s%s.dat" %(output,filename[4:-4])  
         exist = os.path.isfile(tempFilename)
         #print tempFilename
         if exist:
@@ -46,6 +46,7 @@ if scanNo == folder:
         else:
             if filename[-4:] == ".nxs": #filter out everything that is not data
                 convertData(filename) 
-                
+
+
 
 
