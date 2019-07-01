@@ -26,10 +26,10 @@ def convertData(filename):
     except:
         print "failed %s" %filename
 
-folder = "Z:\\2019\si19996-1\\"
+folder = "C:\Users\\wvx67826\\Desktop\\test data\\New folder\\"
 output = "C:\\Users\\wvx67826\\Desktop\\test data\\"
-scanNo = range (525683,525690)
-#scanNo = folder
+#scanNo = range (525683,525690)
+scanNo = folder
 
 if isinstance(scanNo, (list,)):
     for filename in scanNo:
@@ -39,8 +39,8 @@ if scanNo == folder:
     for filename in sorted(os.listdir(scanNo)):
         tempFilename = "%s%s.dat" %(output,filename[4:-4])  
         exist = os.path.isfile(tempFilename)
-        #print tempFilename
-        if exist:
+        
+        if exist and os.path.getmtime(tempFilename)>os.path.getmtime(folder+"%s" %filename):
             print tempFilename
             pass #' do nothing'
         else:
