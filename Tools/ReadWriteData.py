@@ -44,35 +44,38 @@ write_ascii(self, filename, names, data)
 import numpy as np
 import h5py    # HDF5 support
 from PIL import Image
+import os
 
 class ReadWriteData():
     def __init__(self):
         self.metadata = []
         self.data = []
         self.nexusData = []
-        
+#============================= old ascii format=======================================
     def read_file(self, filename):
         with  open(filename,'r') as f:
             meta = True
             tMeta = []
             tData = []
+            # break up the meta and data
             for line in f:
-                tMeta.append(line)
+                tMeta.append(line) 
                 if not meta:
                     tData.append(line) 
                 if " &END" in line:
                     meta = False
             self.metadata = tMeta
             self.data = tData
+            
     def get_meta_value(self, metaName):
         for line in self.metadata:
             if metaName in line:
                 return line.split("=",1)[1]
     def get_data(self):
-        
         return np.genfromtxt(self.data, names = True, delimiter = "\t")
         #return ascii.read(self.data)
 
+#============================= nexus =======================================
     def read_nexus_data(self,folder, filename):
         self.nexusData = h5py.File(str(folder)+ str(filename) + '.nxs',  "r")
         return self.nexusData
@@ -108,8 +111,8 @@ class ReadWriteData():
                
             f.write("\n" )
         f.close()
-
-    def nexus2ascii(self,outPutFilename):
+#============== this part is nexus converter back to ascii========================= 
+    def nexus2ascii(self,outPutFilename): #this effectiviely does all the convertion and write out the data 
         k = self.nexusData
         metaData = []
         data = []
@@ -121,19 +124,20 @@ class ReadWriteData():
                 metaData.append("%s = %s" %(key1,k[meta1].value ))
         
         for key in k["entry1/instrument/"]:
-            meta = "entry1/instrument/%s" %(key)
-            keylist =["monochromator","name","source","description","id", "type" ] 
+            tempData = "entry1/instrument/%s" %(key)
+            keylist =["monochromator","name","source","description","id", "type","data_file", "local_name"  ] # removes key that are redundant 
             if key in keylist:
                 pass
             else:
-                for key1 in k[meta]:
+                for key1 in k[tempData]:
                     if key1 in keylist:
                         pass
+
                     else:
-                        meta1  = meta +"/%s" %key1
+                        tempData1  = tempData +"/%s" %key1
                         tempName = "%s/%s" %(key, key1)
                         names.append(tempName)
-                        data.append(k[meta1].value )
+                        data.append(k[tempData1].value )
         f = open(outPutFilename, 'w+')
         for i in metaData:
             f.write("%s\n" %i)   
@@ -142,9 +146,48 @@ class ReadWriteData():
         f.write("\n" )
         for j in range (0,len(data[0])):
             for k in range (0,len(data)):
-                f.write("%s \t" %data[k][j])
+                try:
+                    f.write("%s \t" %data[k][j])
+                except IndexError:
+                    f.write("%s \t" %"None")
             f.write("\n" )
         f.close()
+        
+    def checkNexusData(self, folder, outputFolder, filename): #this part make sure the data exit before converting 
+    
+        filen = folder+ "i10-"
+        if filename[0:4] == "i10-":
+            filename = filename[4:-4] #cutting the file name to fit the read nexus
+        print filename
+        self.read_nexus_data(filen,filename)
+        fulloutputname = "%s%s.dat" %(outputFolder,filename)
+        
+        self.nexus2ascii(fulloutputname)
+        try:
+            self.read_nexus_data(filen,filename)
+            fulloutputname = "%s%s.dat" %(outputFolder,filename)
+            self.nexus2ascii(fulloutputname)
+        except:
+            print "failed %s" %filename
+    
+    def convertNexus2Ascii(self,scanNo, folder, outputFolder): #this ally either the whole folder or a range of scan numbers to be converted
+        if isinstance(scanNo, (list,)):
+            for filename in scanNo:
+                self.checkNexusData(folder, outputFolder,str(filename) )
+    
+        if scanNo == folder:
+            for filename in sorted(os.listdir(scanNo)):
+                tempFilename = "%s%s.dat" %(outputFolder,filename[4:-4])  
+                exist = os.path.isfile(tempFilename)
+                
+                if exist and os.path.getmtime(tempFilename)>os.path.getmtime(folder+"%s" %filename):
+                    print tempFilename
+                    pass #' do nothing'
+                else:
+                    if filename[-4:] == ".nxs": #filter out everything that is not data
+                        self.checkNexusData(folder, outputFolder,str(filename))
+
+
         
     
     def get_nexus_image_filename(self, subBranch = "/pixistiff/image_data", nData = None, mainBranch ="/entry1" ):

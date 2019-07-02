@@ -55,7 +55,7 @@ class I10DataReduction():
     def __init__(self):
         self.tools = Tools()
 #function that read two data set and perform normalization
-    def xas_pair_processing( self, data, folder, outFileName = "No output", metaOutFileName =[""], 
+    def xas_pair_processing( self, data, folder, outFileName = None, metaOutFileName =[""], 
                             nextPol = 1, showPlot = False, linFit = False, pol1= "idu_circ_pos",
                             pol2 = "idu_circ_neg", mirrorDrain = "16", detectors =[17,18,19],
                             xasStartAverage = [10,40], xasEndAverage = [0,1]):
@@ -104,7 +104,7 @@ class I10DataReduction():
             if showPlot:
                 self.__plot_data(result,detectors,detType)
                 
-            if outFileName != "No output":
+            if outFileName != None:
                 scanType = "escan"
                 self.__saveData(scanType, metaOutFileName, edata,outFileName, dataName, result)
 
@@ -166,7 +166,7 @@ class I10DataReduction():
     def meta_name_string(self, meta_name):
         full_meta_name = ""
         for i in meta_name:
-            full_meta_name = full_meta_name + "_%s_%.4g_" %(i, self.tools.get_nexus_meta(i))
+            full_meta_name = full_meta_name + "_%s_%.4g_" %(i.split("/")[1].replace("/",""), self.tools.get_nexus_meta(i))
         return full_meta_name
             
     def __plot_data(self,data, detectors, detectorType):
@@ -224,9 +224,7 @@ class I10DataReduction():
         return  result, dataName
     def __detectorType(self, detType, channel):
         if channel == "refl":
-            return "/refl/refl"
+            return "/rdeta/rdet"
         if detType == "xas":
             return "/mcsr%s_g/data" %channel
-        if detType == "refl":
-            return "/macr%s/data" %channel
-        
+  
