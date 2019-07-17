@@ -73,7 +73,7 @@ class ReadWriteData():
                 return line.split("=",1)[1]
     def get_data(self):
         return np.genfromtxt(self.data, names = True, delimiter = "\t")
-        #return ascii.read(self.data)
+        #return ascii.read(self.data, delimiter='\t')
 
 #============================= nexus =======================================
     def read_nexus_data(self,folder, filename):
@@ -181,7 +181,7 @@ class ReadWriteData():
                 exist = os.path.isfile(tempFilename)
                 
                 if exist and os.path.getmtime(tempFilename)>os.path.getmtime(folder+"%s" %filename):
-                    print tempFilename
+                    #print tempFilename
                     pass #' do nothing'
                 else:
                     if filename[-4:] == ".nxs": #filter out everything that is not data
