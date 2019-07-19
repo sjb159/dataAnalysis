@@ -45,6 +45,7 @@ import numpy as np
 import h5py    # HDF5 support
 from PIL import Image
 import os
+from astropy.io import ascii
 
 class ReadWriteData():
     def __init__(self):
@@ -72,8 +73,10 @@ class ReadWriteData():
             if metaName in line:
                 return line.split("=",1)[1]
     def get_data(self):
-        return np.genfromtxt(self.data, names = True, delimiter = "\t")
-        #return ascii.read(self.data, delimiter='\t')
+        #return np.genfromtxt(self.data, names = True, delimiter = "\t")
+        return ascii.read(self.data, delimiter='\t')
+    
+        #ascii.read(tData,delimiter=',')
 
 #============================= nexus =======================================
     def read_nexus_data(self,folder, filename):
@@ -180,8 +183,7 @@ class ReadWriteData():
                 tempFilename = "%s%s.dat" %(outputFolder,filename[4:-4])  
                 exist = os.path.isfile(tempFilename)
                 
-                if exist and os.path.getmtime(tempFilename)>os.path.getmtime(folder+"%s" %filename):
-                    #print tempFilename
+                if exist and (os.path.getmtime(tempFilename)-os.path.getmtime(folder+"%s" %filename))>300:
                     pass #' do nothing'
                 else:
                     if filename[-4:] == ".nxs": #filter out everything that is not data
