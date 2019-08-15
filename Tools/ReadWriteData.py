@@ -78,7 +78,7 @@ class ReadWriteData():
     
         #ascii.read(tData,delimiter=',')
 
-#============================= nexus =======================================
+#============================= nexus =============================================
     def read_nexus_data(self,folder, filename):
         self.nexusData = h5py.File(str(folder)+ str(filename) + '.nxs',  "r")
         return self.nexusData
@@ -114,26 +114,27 @@ class ReadWriteData():
                
             f.write("\n" )
         f.close()
-#============== this part is nexus converter back to ascii========================= 
-    def nexus2ascii(self,outPutFilename): #this effectiviely does all the convertion and write out the data 
+#============== this part is nexus conversion back to ascii============================== 
+    def nexus2ascii(self, outPutFilename, metaKey = "entry1/before_scan/", dataKey = "entry1/instrument/",
+                     redundantKeyList = ["monochromator","name","source","description","id", "type","data_file", "local_name"]): #this effectively does all the conversion and write out the data 
         k = self.nexusData
         metaData = []
         data = []
         names = []
-        for key in k["entry1/before_scan/"]:
-            meta = "entry1/before_scan/%s" %(key)
+        for key in k[metaKey]:
+            meta = "%s%s" %(metaKey, key)
             for key1 in k[meta]:
                 meta1  = meta +"/%s" %key1
                 metaData.append("%s = %s" %(key1,k[meta1].value ))
         
-        for key in k["entry1/instrument/"]:
-            tempData = "entry1/instrument/%s" %(key)
-            keylist =["monochromator","name","source","description","id", "type","data_file", "local_name"  ] # removes key that are redundant 
-            if key in keylist:
+        for key in k[dataKey]:
+            tempData = "%s%s" %(dataKey, key)
+            # removes key that are redundant 
+            if key in redundantKeyList:
                 pass
             else:
                 for key1 in k[tempData]:
-                    if key1 in keylist:
+                    if key1 in redundantKeyList:
                         pass
 
                     else:
@@ -156,11 +157,11 @@ class ReadWriteData():
             f.write("\n" )
         f.close()
         
-    def checkNexusData(self, folder, outputFolder, filename): #this part make sure the data exit before converting 
+    def check_nexus_data(self, folder, outputFolder, filename, beamlineFile = "i10-"): #this part make sure the data exit before converting 
     
-        filen = folder+ "i10-"
-        if filename[0:4] == "i10-":
-            filename = filename[4:-4] #cutting the file name to fit the read nexus
+        filen = folder+ beamlineFile
+        if filename[0:4] == beamlineFile:
+            filename = filename[4:-4] #cutting the file name to fit read nexus
         print filename
         self.read_nexus_data(filen,filename)
         fulloutputname = "%s%s.dat" %(outputFolder,filename)
@@ -173,10 +174,11 @@ class ReadWriteData():
         except:
             print "failed %s" %filename
     
-    def convertNexus2Ascii(self,scanNo, folder, outputFolder): #this ally either the whole folder or a range of scan numbers to be converted
+    def convert_nexus_ascii(self,scanNo, folder, outputFolder): #this either run the whole folder or a range of scan numbers for conversion
         if isinstance(scanNo, (list,)):
             for filename in scanNo:
-                self.checkNexusData(folder, outputFolder,str(filename) )
+                print filename
+                self.check_nexus_data(folder, outputFolder,str(filename) )
     
         if scanNo == folder:
             for filename in sorted(os.listdir(scanNo)):
@@ -187,7 +189,7 @@ class ReadWriteData():
                     pass #' do nothing'
                 else:
                     if filename[-4:] == ".nxs": #filter out everything that is not data
-                        self.checkNexusData(folder, outputFolder,str(filename))
+                        self.check_nexus_data(folder, outputFolder,str(filename))
 
 
         

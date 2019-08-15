@@ -24,15 +24,15 @@ norm_data(self,data1,data2)
 
 
 '''
-from numpy import average, cos, sin, deg2rad, pi
+from numpy import average, cos, sin, deg2rad, pi, interp
 from numpy.polynomial.polynomial import polyval, polyfit 
 from scipy.optimize import curve_fit
 class XasDataProcess():
     def __init__(self):
         pass
     
-    def xas_corr(self, data1 , data1lowCutOff = 10, linFit = False,
-                  data1highCutOff = 30, data1EndLowCutOff = -10, data1EndHighCutOff = -1):
+    def xas_corr(self, data1 , data1lowCutOff = 5, linFit = False,
+                  data1highCutOff = 20, data1EndLowCutOff = -10, data1EndHighCutOff = -1):
         #This subtract pre-edge and normalise to pro-edge
         k = DataCorrection()
         if (linFit == True):
@@ -65,9 +65,13 @@ class XasDataProcess():
             
     def xmcd(self,data1,data2):
         return data1-data2
-    
+    def xmcd_w_corr(self, x1, x2, data1, data2):
+        return self.xmcd(data1, interp(x1, x2, data2))
     def xmcd_ratio(self, data1, data2):
         return (data1-data2)/(data1+data2)    
+    def xmcd_ratio_w_corr(self, x1, x2, data1, data2):
+        return self.xmcd_ratio(data1,interp(x1,x2, data2))
+        
 
 class AngleToQ():
     def __init__(self):
