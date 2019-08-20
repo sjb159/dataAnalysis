@@ -23,8 +23,8 @@ lastScanNo = None
 timeOut = 0
 while timeOut < 24*3600:
     if newScanNo == lastScanNo:
-        print lastScanNo
         lastScanNo = int(re.split("-|.hdf" ,sorted(os.listdir(folder))[-5])[1])
+        print lastScanNo
         time.sleep(66.6666666)
         timeOut = timeOut+66.66666666
         newScanNo = int(re.split("-|.hdf" ,sorted(os.listdir(folder))[-5])[1])

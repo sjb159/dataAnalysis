@@ -24,7 +24,7 @@ norm_data(self,data1,data2)
 
 
 '''
-from numpy import average, cos, sin, deg2rad, pi, interp
+from numpy import average, cos, sin, deg2rad, pi, interp, max
 from numpy.polynomial.polynomial import polyval, polyfit 
 from scipy.optimize import curve_fit
 class XasDataProcess():
@@ -33,6 +33,16 @@ class XasDataProcess():
     
     def xas_corr(self, data1 , data1lowCutOff = 5, linFit = False,
                   data1highCutOff = 20, data1EndLowCutOff = -10, data1EndHighCutOff = -1):
+        """
+        data1lowcutOff is the number of lowest intensity point to skip
+        
+        data1highCutOff is the total number of lowest intensity point to average over
+        
+        ata1EndLowCutOff = -10, data1EndHighCutOff = -1
+        
+        are the range of data points that will average over where the rest of the data normlised to.
+        """
+        
         #This subtract pre-edge and normalise to pro-edge
         k = DataCorrection()
         if (linFit == True):
@@ -43,26 +53,29 @@ class XasDataProcess():
             corBackData = data1- cStart  
             return corBackData/average(corBackData[data1EndLowCutOff:data1EndHighCutOff])      
         else:
-            corBackData = (data1 - average(data1[data1lowCutOff:data1highCutOff]))
-            return corBackData /average(corBackData[data1EndLowCutOff:data1EndHighCutOff])
+            tempData1 = list(data1)
+            tempData2 = list(data1[data1EndLowCutOff: -1])
+            tempData1.sort()
+            tempData2.sort()
+            corBackData = (data1- average(tempData1[data1lowCutOff:data1highCutOff]))
+            return corBackData /average(tempData2[1:-2])
            
     
-    def xref_corr(self, data1 , data1lowCutOff = 10, linFit = False,
-                  data1highCutOff = 30, data1EndLowCutOff = -10, data1EndHighCutOff = -1):
+    def xref_corr(self, data1 , data1lowCutOff = 1,
+                  data1highCutOff = 10, norm = "ref"):
         #This subtract pre-edge and normalise to pro-edge
-        k = DataCorrection()
-        if (linFit == True):
-            dataXStart = range (0, data1highCutOff-data1lowCutOff)
-            mc =k.poly_fit(dataXStart, data1[data1lowCutOff:data1highCutOff])
-            xStart = range(len(data1))
-            cStart=  k.gen_poly(xStart, mc)
-            corBackData = data1- cStart  
-            return corBackData/average(corBackData[data1EndLowCutOff:data1EndHighCutOff])      
-        else:
-            corBackData = (data1)
-            return corBackData /average(corBackData[data1EndLowCutOff:data1EndHighCutOff])
-
-            
+       
+        tempData1 = list(data1)
+        tempData1.sort()
+        corData = (data1 - average(tempData1[data1lowCutOff:data1highCutOff]))
+        if norm == "REF": return corData /corData[0]
+        elif norm == "MAX": return corData/ max(corData)  
+        elif norm == None: return corData
+        else: 
+            "warning: unnormlised data" 
+            return corData
+        
+        
     def xmcd(self,data1,data2):
         return data1-data2
     def xmcd_w_corr(self, x1, x2, data1, data2):

@@ -6,7 +6,7 @@ Created on 13 Feb 2019
 convert everything in nexus to ascii e.g. back to the old format
 '''
 
-import time,os,sys
+import time,os,sys, re
 sys.path.append("/home/wvx67826/Desktop/dataAnalysis-master/")
 from Tools import Tools
 dr = Tools.ReadWriteData()
@@ -18,15 +18,15 @@ dr.convertNexus2Ascii(scanNo, folder, output) # scanNo takes either a list or a 
 
 
 # This part is an infinit loop to keep checking for the latest scan
-newScanNo = 0
-lastScanNo = 0
+newScanNo = None
+lastScanNo = None
 timeOut = 0
 while timeOut < 24*3600:
     if newScanNo == lastScanNo:
-        lastScanNo = int(sorted(os.listdir(folder))[-5][4:-4])
+        lastScanNo = int(re.split("-|.hdf" ,sorted(os.listdir(folder))[-5])[1])
         time.sleep(66.6666666)
         timeOut = timeOut+66.66666666
-        newScanNo = int(sorted(os.listdir(folder))[-5][4:-4])
+        newScanNo = int(re.split("-|.hdf" ,sorted(os.listdir(folder))[-5])[1])
     else:
         dr.convertNexus2Ascii(range(newScanNo,lastScanNo-2,-1), folder, output)
         lastScanNo = newScanNo
