@@ -1,0 +1,18 @@
+--- Mg(002) Sample parameters ---
+F0	=	(24.6301932533+3.54577812745j)
+FH	=	(18.359335369+3.54577812745j)
+FHbar	=	(18.359335369+3.54577812745j)
+DW for element A	=	0.0 (for elemental and compounds) 
+DW for element B	=	0.0 (for compounds only)
+d hkl	=	2.6204
+Bragg energy	=	2365.74945402
+b	=	-1.0
+P	=	-1.0
+--- Si(111) DCM  ---
+DW	=	0.225331029787
+F0	=	(108.157597102+23.055223562j)
+FH	=	(-56.5705109442-16.2093621033j)
+FHbar	=	(-56.5705109442-16.2093621033j)
+d hkl	=	3.13553157694
+b	=	-1.0
+P	=	1.0
