@@ -31,8 +31,8 @@ class XasDataProcess():
     def __init__(self):
         pass
     
-    def xas_corr(self, data1 , data1lowCutOff = 5, linFit = False,
-                  data1highCutOff = 20, data1EndLowCutOff = -10, data1EndHighCutOff = -1):
+    def xas_corr(self, data1 , data1lowCutOff = 1, linFit = False,
+                  data1highCutOff = 10, data1EndLowCutOff = -12, data1EndHighCutOff = -2):
         """
         data1lowcutOff is the number of lowest intensity point to skip
         
@@ -54,15 +54,19 @@ class XasDataProcess():
             return corBackData/average(corBackData[data1EndLowCutOff:data1EndHighCutOff])      
         else:
             tempData1 = list(data1)
-            tempData2 = list(data1[data1EndLowCutOff: -1])
+            
             tempData1.sort()
-            tempData2.sort()
+            
+            
             corBackData = (data1- average(tempData1[data1lowCutOff:data1highCutOff]))
-            return corBackData /average(tempData2[1:-2])
+            tempData2 = list(data1[data1EndLowCutOff: data1EndHighCutOff])
+            tempData2.sort()
+
+            return corBackData /average(tempData2[2:-2])
            
     
     def xref_corr(self, data1 , data1lowCutOff = 1,
-                  data1highCutOff = 10, norm = "ref"):
+                  data1highCutOff = 10, norm = "ref", notUsed = None):
         #This subtract pre-edge and normalise to pro-edge
        
         tempData1 = list(data1)

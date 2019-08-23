@@ -6,7 +6,8 @@ Created on 15 Aug 2019
 
 
 '''
-from Tools.Tools import ReadWriteData, XasDataProcess
+from Tools.ReadWriteData import ReadWriteData
+from Tools.DataReduction.DataCorrection import  XasDataProcess
 from numpy import vstack, hstack
 class Reduction(ReadWriteData, XasDataProcess):
     def __init__(self):
@@ -49,7 +50,7 @@ class Reduction(ReadWriteData, XasDataProcess):
         return lMeta, lData
     
     
-    def get_ref(self,folder, scanNo, lScanableName = None, lMetaName = None, cutoffs = [2,10,"REF"]):
+    def get_ref(self,folder, scanNo, lScanableName = None, lMetaName = None, cutoffs = [2,10,"REF",None]):
         """
         Get all none energy data and either normised to first data point with:
         REF or maximum with MAX and None
@@ -104,7 +105,8 @@ class Reduction(ReadWriteData, XasDataProcess):
                                                     data1EndHighCutOff = cutoffs[3]))
             else:
                 lData.append(self.xref_corr(lData[-1] , data1lowCutOff = cutoffs[0],
-                                             data1highCutOff = cutoffs[1], norm = cutoffs[2]))
+                                             data1highCutOff = cutoffs[1], norm = cutoffs[2],
+                                             notUsed = cutoffs[3]))
 
             lDataName.append("%s corrected" %j)
         ltempMeta = list(lMeta)

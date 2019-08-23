@@ -12,7 +12,7 @@ from DataReduction.DataCorrection import *
 from AreaDetector.ImageAnalysis import *
 from DataReduction.Reduction import *
 from Output.Output import *
-class Tools(AngleToQ, ReadWriteData, XasDataProcess,DataCorrection,ImageAnalysis, Reduction, Output):
+class Tools(AngleToQ, ReadWriteData, XasDataProcess,DataCorrection,ImageAnalysis, Output, Reduction):
     def __init__(self):
         AngleToQ.__init__(self)
         ReadWriteData.__init__(self)
