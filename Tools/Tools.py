@@ -8,16 +8,16 @@ Tool box for various calculations
     
 '''
 from ReadWriteData import *
-from DataReduction.DataCorrection import *
-from AreaDetector.ImageAnalysis import *
-from DataReduction.Reduction import *
 from Output.Output import *
-class Tools(AngleToQ, ReadWriteData, XasDataProcess,DataCorrection,ImageAnalysis, Output, Reduction):
+from AreaDetector.ImageAnalysis import *
+from DataReduction.DataCorrection import *
+
+
+class Tools(AngleToQ, ReadWriteData, XasDataProcess,DataCorrection,ImageAnalysis, Output):
     def __init__(self):
         AngleToQ.__init__(self)
         ReadWriteData.__init__(self)
         XasDataProcess.__init__(self)
         DataCorrection.__init__(self)
         ImageAnalysis.__init__(self)
-        Reduction.__init_(self)
         Output.__init__(self)

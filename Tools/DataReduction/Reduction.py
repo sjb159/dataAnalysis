@@ -7,7 +7,7 @@ Created on 15 Aug 2019
 
 '''
 from Tools.ReadWriteData import ReadWriteData
-from Tools.DataReduction.DataCorrection import  XasDataProcess
+from Tools.DataReduction.DataCorrection import XasDataProcess
 from numpy import vstack, hstack
 class Reduction(ReadWriteData, XasDataProcess):
     def __init__(self):

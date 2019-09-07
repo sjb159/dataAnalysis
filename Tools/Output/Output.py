@@ -6,6 +6,7 @@ Created on 16 Aug 2019
 import matplotlib.pyplot as plt
 from win32api import GetSystemMetrics
 
+
 class Output():
     def __init__(self):
         pass
@@ -17,7 +18,7 @@ class Output():
         screenWidth = GetSystemMetrics(0)
         screenHeight = GetSystemMetrics(1)
 
-        plt.figure(figsize=(screenWidth/myDpi, screenHeight/myDpi), dpi=myDpi)
+        fig = plt.figure(figsize=(screenWidth/myDpi, screenHeight/myDpi), dpi=myDpi)
         if (lMetaName != None and lMeta != None):
             title = ""
             for i,j in enumerate (lMetaName):
@@ -34,7 +35,7 @@ class Output():
                 if logY:
                     plt.semilogy()
         plt.draw()
-        fig =  plt.gcf()    
+        #fig =  plt.gcf()    
         plt.close()
         return fig
         

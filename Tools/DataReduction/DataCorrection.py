@@ -27,6 +27,7 @@ norm_data(self,data1,data2)
 from numpy import average, cos, sin, deg2rad, pi, interp, max
 from numpy.polynomial.polynomial import polyval, polyfit 
 from scipy.optimize import curve_fit
+
 class XasDataProcess():
     def __init__(self):
         pass
@@ -59,10 +60,10 @@ class XasDataProcess():
             
             
             corBackData = (data1- average(tempData1[data1lowCutOff:data1highCutOff]))
-            tempData2 = list(data1[data1EndLowCutOff: data1EndHighCutOff])
+            tempData2 = list(corBackData[data1EndLowCutOff: data1EndHighCutOff])
             tempData2.sort()
 
-            return corBackData /average(tempData2[2:-2])
+            return corBackData /average(tempData2[1:-1])
            
     
     def xref_corr(self, data1 , data1lowCutOff = 1,
@@ -71,9 +72,12 @@ class XasDataProcess():
        
         tempData1 = list(data1)
         tempData1.sort()
-        corData = (data1 - average(tempData1[data1lowCutOff:data1highCutOff]))
-        if norm == "REF": return corData /corData[0]
-        elif norm == "MAX": return corData/ max(corData)  
+        corData = (data1) #- average(tempData1[data1lowCutOff:data1highCutOff]))
+        if norm == "REF": 
+            return corData /corData[0] 
+        elif norm == "MAX": 
+            print "Max"
+            return corData/ max(tempData1[:-10])  
         elif norm == None: return corData
         else: 
             "warning: unnormlised data" 
@@ -93,10 +97,12 @@ class XasDataProcess():
 class AngleToQ():
     def __init__(self):
         pass
-    def cal_qz(self, tth, th, energy):
+    def cal_qz(self, tth, th, energy,alpha = 0):
         return 2.0*pi/self.cal_wave(energy)*(sin(deg2rad((tth-th)))+sin(deg2rad(th)))
-    def cal_qx(self,tth, th, energy):
-        return 2.0*pi/self.cal_wave(energy)*(cos(deg2rad((tth-th)))-cos(deg2rad(th)))
+    def cal_qx(self,tth, th,  energy,alpha = 0):
+        return 2.0*pi/self.cal_wave(energy)*(cos(deg2rad(alpha))*cos(deg2rad((tth-th)))-cos(deg2rad(th)))
+    def cal_qy(self,tth, th,  energy,alpha = 0):
+        return 2.0*pi/self.cal_wave(energy)*(cos(deg2rad((tth-th)))*sin(deg2rad(alpha)))
     def cal_wave(self, energy):
         return 12400.0/energy
     

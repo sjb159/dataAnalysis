@@ -43,7 +43,6 @@ write_ascii(self, filename, names, data)
 '''
 import numpy as np
 import h5py    # HDF5 support
-from PIL import Image
 import os
 from astropy.io import ascii
 
@@ -71,7 +70,8 @@ class ReadWriteData():
     def get_meta_value(self, metaName):
         for line in self.metadata:
             if metaName in line:
-                return line.split("=",1)[1]
+                if line.split("=",1)[0] == metaName: return float(line.split("=",1)[1])
+                 
     def get_data(self):
         #return np.genfromtxt(self.data, names = True, delimiter = "\t")
         return ascii.read(self.data, delimiter='\t')
@@ -201,10 +201,18 @@ class ReadWriteData():
         #im = Image.open(temp)
         return temp
     
-    def get_nexus_tiff(self, subBranch = "/pixistiff/image_data", nData = 0, mainBranch ="/entry1" ):
-        if nData == 0:
+    def get_nexus_tiff(self, subBranch = "/pixistiff/image_data", nData = None, mainBranch ="/entry1" ):
+        if nData == None:
             nData = self.nexusData
         temp = "//data" +nData[mainBranch + subBranch][0].split('/dls')[1]
         #im = Image.open(temp)
         return temp
+    def get_single_hdf5_image(self, subBranch = "/pixistiff/image_data", nData = None, mainBranch ="/entry1" ):
+        image = np.array( nData[mainBranch + subBranch])
+        return image
+
+
+"""---------------------------------Reduction----------------------------------------------------------"""        
+        
+        
         
