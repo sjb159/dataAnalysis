@@ -9,8 +9,8 @@ import matplotlib.pyplot as plt
 from Tools.Tools import Tools
 
 dr = Tools()
-folder =  "C:\\Users\\wvx67826\\Desktop\\LSMO\\Paul\\"
-filename = folder +"HvM_tscanLsmo_100OeS.dat"
+folder =  "Y:\\SQUID\\Relm\\3dice\\"
+filename = folder +"HvM_NoAu_00001.dat"
 with  open(filename,'r') as f:
     meta = True
     tMeta = []

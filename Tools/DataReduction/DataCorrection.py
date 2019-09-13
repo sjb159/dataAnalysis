@@ -77,7 +77,7 @@ class XasDataProcess():
             return corData /corData[0] 
         elif norm == "MAX": 
             print "Max"
-            return corData/ max(tempData1[:-10])  
+            return corData/ max(corData)  
         elif norm == None: return corData
         else: 
             "warning: unnormlised data" 

@@ -74,6 +74,12 @@ class Reduction(ReadWriteData, XasDataProcess):
                 lCpDataName, lCpData, lCpMetaName, lCpMeta = self.__corr_xas_data__(folder, scan, lScanableName, lMetaName, scanType, cutoffs)
             elif "neg" in scanType:
                 lCnDataName, lCnData, lCnMetaName, lCnMeta = self.__corr_xas_data__(folder, scan, lScanableName, lMetaName, scanType, cutoffs)
+                
+            elif "hor" in scanType:
+                lCpDataName, lCpData, lCpMetaName, lCpMeta = self.__corr_xas_data__(folder, scan, lScanableName, lMetaName, scanType, cutoffs)
+            elif "ver" in scanType:
+                lCnDataName, lCnData, lCnMetaName, lCnMeta = self.__corr_xas_data__(folder, scan, lScanableName, lMetaName, scanType, cutoffs)    
+            
             else: print "not circular energy scan"
         lResult = []
         lResultName = []

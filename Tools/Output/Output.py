@@ -30,8 +30,8 @@ class Output():
             plt.subplot(round(noOfPlot/2.0),2, i +1)
             plt.title(j)
             lNameUsed = [k for k,checkName in enumerate(lYName) if checkName == j]
-            for l in lNameUsed:
-                plt.plot(x ,lY[l])
+            for m,l in enumerate(lNameUsed):
+                plt.plot(x[m] ,lY[l])
                 if logY:
                     plt.semilogy()
         plt.draw()
