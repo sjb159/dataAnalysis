@@ -32,7 +32,9 @@ class Output():
             lNameUsed = [k for k,checkName in enumerate(lYName) if checkName == j]
             for m,l in enumerate(lNameUsed):
                 plt.plot(x[m] ,lY[l])
-                if logY:
+                if "xmcd" in j:
+                   pass 
+                elif logY:
                     plt.semilogy()
         plt.draw()
         #fig =  plt.gcf()    
