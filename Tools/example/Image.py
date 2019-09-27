@@ -28,3 +28,5 @@ for i,im in enumerate(arImage):
     plt.title(k[i])
     plt.colorbar()
     plt.show()
+    
+    
