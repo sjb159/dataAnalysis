@@ -17,12 +17,12 @@ import matplotlib.pyplot as plt
 Rd = Reduction()
 Dp = Output() 
 
-folder = "Z:/2019/cm22968-4/i10-"
+folder = "Z:\\2019\\mm19994-1\\i10-"
 
-lMeta = ["/th/th" ]
+lMeta = ["/itc2/itc2" ]
 lData = ["/mcsr17_g/data","/mcsr18_g/data", "/mcsr16_g/data"]
 plotList = ["/mcsr17_g/data corrected", "/mcsr18_g/data corrected", "xmcd /mcsr17_g/data corrected", "xmcd /mcsr18_g/data corrected" ]
-lScanNo = [561962, 561963]
+lScanNo = [570702, 570703]
 cutoffs = [1,7,-20,-10]
 
 

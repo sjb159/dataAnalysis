@@ -12,36 +12,27 @@ xrMoke = XrayMoke()
 
 ##============= Define sample gamma and beta ===============================
 n  = np.array([1.0,
-               1.0+4.1469e-3+3.18471e-3*i, 
-               1.0+1.54759e-3+3.07e-4*i,
-               1.0-1.77147e-3+1.21e-3*i,
-               1.0-1.77147e-3+1.21e-3*i,
-               1.0-1.77147e-3+1.21e-3*i,
-               1.0+4.1469e-3+3.1847e-3*i,
-               1.0+1.537e-3+3.9349e-3*i,
-               1.0+1.537e-3+3.9349e-3*i])
+               1.0+3.31060E-03+2.05586E-03*i,
+               1.0+1.37849E-03+1.45084E-03*i,
+               1.0+1.37849E-03+1.45084E-03*i,
+               1.0+6.95156E-04+1.42226E-04*i,
+               1.0+7.53183E-04+9.51189E-05*i])
 
 d = np.array([0,
-              109.4,
-              69,
-              5,
-              6,
-              130,
-              302.6,
-              190,
+              30.0,
+              40.0,
+              20.0,
+              20.0,
               200])
-q = np.array([0,
-              0,
-              0,
+
+q = np.array([0.0,
+              0.0,
               1.68661e-3+1.06361e-4*i,
               1.68661e-3+1.06361e-4*i,
-              0,
-              0,
-              0,
-              0,
-              0])
-aPhi =   np.array([0, 0, 0, 90.0, 90, 0,0, 0,0])
-aGamma = np.array([0, 0, 0, 90.0, 90, 0,0, 0,0])
+              0.0,
+              0.0])
+aPhi =   np.array([0.0, 0.0, 70.0, 90,0, 0.0, 0.0])
+aGamma = np.array([0.0, 0.0, 90.0, 90,0, 0.0, 0.0])
 ##=================================================================================
 
 """To store result"""
@@ -61,26 +52,26 @@ waveLen = 12.4/0.777198
 """timer"""
 start_time1 = timeit.default_timer()
 
-"""define momenet direction and how it changes"""
+"""define moment direction and how it changes"""
 
 
-angle = np.arange(-100,100,1)
-angle = np.append(angle, np.arange(100,-100,-1))
+angle = np.arange(-100,100,1.0)
+angle = np.append(angle, np.arange(100,-100,-1.0))
 
 #spin = [45,-45] #right angle to beam
-spin = [-90,90, 0] #right angle to beam
+spin = [0.0, 180.0, 0] #right angle to beam
 
 #spin = [90,180] #parallel 
 hy = np.full((1,119),spin[0])
-hy = np.append(hy, spin[2])
+hy = np.append(hy, spin[1])
 hy = np.append(hy, np.full((1,199),spin[1]))
-hy = np.append(hy, spin[2])
+hy = np.append(hy, spin[0])
 hy = np.append(hy, np.full((1,80),spin[0]))
 
-thetaWanted =10
+thetaWanted =24.5
 theta = 90 - thetaWanted 
 
-filename = "Co_Cu_gamma_ra_fix%.f-fix%.f-%.f_th%.f.dat" %(aGamma[1],aGamma[2],aGamma[3],theta)
+filename = "Pt_Cu_gamma_ra_fix%.f-fix%.f-%.f_th%.f.dat" %(aGamma[1],aGamma[2],aGamma[3],theta)
 f = open("TestData/"+filename, "w+")
 
 aGamma  = np.deg2rad(aGamma)
@@ -91,8 +82,8 @@ aPhi = np.deg2rad(aPhi)
 for gamma1 in hy:    
     #aPhi[1] = np.deg2rad(gamma1)
     #aPhi[2] = np.deg2rad(gamma1)
-    aGamma[3] = np.deg2rad(gamma1)
-    aGamma[4] = np.deg2rad(gamma1)
+    aGamma[2] = np.deg2rad(gamma1)
+    #aGamma[4] = np.deg2rad(gamma1)
     """    if gamma1 ==spin[0]:
         aPhi[3] = np.deg2rad(14)
     if gamma1 == spin[1]:
@@ -155,8 +146,8 @@ plt.subplot(223)
 plt.title("XMCD")
 plt.plot(angle, intensity7)
 #plt.figure(8)
-plt.title("LC &RC")
 plt.subplot(224)
+plt.title("LC &RC")
 plt.plot(angle, intensity8)
 plt.plot(angle, intensity9)
 plt.show()
