@@ -10,7 +10,7 @@ Read_file(filename)
     
 get_meta_value(self, metaName):
 
-def get_data(self):
+get_data(self):
 return ascii formate data
 
 Nexus format:
@@ -30,15 +30,6 @@ write_ascii(self, filename, names, data)
     file name = output file name
     names are the name list for the column data
     list of data 
-    example:
-        result = []
-        result.append(energy)
-        result.append(xas1)
-        result.append(xas2)
-        result.append(xmcd)
-        result.append(xmcd_ratio)
-        k = ["energy", "Cp", "cn","xmcd","xmcd_ratio"]
-        tools.write_ascii("test.dat",k,result)
 
 '''
 import numpy as np
@@ -116,7 +107,8 @@ class ReadWriteData():
         f.close()
 #============== this part is nexus conversion back to ascii============================== 
     def nexus2ascii(self, outPutFilename, metaKey = "entry1/before_scan/", dataKey = "entry1/instrument/",
-                     redundantKeyList = ["monochromator","name","source","description","id", "type","data_file", "local_name"]): #this effectively does all the conversion and write out the data 
+                     redundantKeyList = ["monochromator","name","source","description","id", "type","data_file", "local_name"]):
+#this effectively does all the conversion and write out the data 
         k = self.nexusData
         metaData = []
         data = []
@@ -136,7 +128,6 @@ class ReadWriteData():
                 for key1 in k[tempData]:
                     if key1 in redundantKeyList:
                         pass
-
                     else:
                         tempData1  = tempData +"/%s" %key1
                         tempName = "%s/%s" %(key, key1)
@@ -156,6 +147,7 @@ class ReadWriteData():
                     f.write("%s \t" %"None")
             f.write("\n" )
         f.close()
+        return True
         
     def check_nexus_data(self, folder, outputFolder, filename, beamlineFile = "i10-"): #this part make sure the data exit before converting 
     
