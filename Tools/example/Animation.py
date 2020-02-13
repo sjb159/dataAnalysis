@@ -31,9 +31,9 @@ for i, k in enumerate (imfile[0:-1:1]):
     print temp
     im = Image.open(temp)
     imarray = np.array(im)
+    print imarray[0][0]
     imlist.append(imarray[:,500:1500])#imarray[1180:1260,820:940])
     im.close()
-    #imcorr.append(ima.corr_r(imlist[0],imlist[0]))
 
 for i, k in enumerate (imlist):
     imcorr.append(ima.corr_r(imlist[0], k))
@@ -46,11 +46,6 @@ for i, k in enumerate (imlist):
     fig3 = plt.figure(3)
     #plt.colorbar(mappable, cax, ax)
     picture3.append((plt.imshow(imdiff[i]),))
-"""    
-    plt.imshow(k)
-    plt.show()
-    plt.imshow(imcrosscorr)
-    plt.show()"""
 
 im_ani = animation.ArtistAnimation(fig1, picture, interval=1000, repeat_delay=3000, blit=True)
 im_ani.save('537542.mp4')
@@ -58,16 +53,4 @@ im_ani2 = animation.ArtistAnimation(fig2, picture2, interval=1000, repeat_delay=
 im_ani.save('537542cc.mp4')
 im_ani3 = animation.ArtistAnimation(fig3, picture3, interval=1000, repeat_delay=3000, blit=True)
 im_ani.save('537542cc.mp4')
-"""plt.figure(3)
-plt.title("R factor")
-plt.plot(imcorr)"""
-plt.show()
-"""
-plt.figure(2)
-plt.title("cross-correlation")
-plt.plot(imcrosscorr)
-#plt.imshow(imarray)
-#plt.show()
-#plt.imshow(newimarray)
-"""
 plt.show()
