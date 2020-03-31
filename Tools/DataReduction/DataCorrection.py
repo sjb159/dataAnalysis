@@ -63,7 +63,7 @@ class XasDataProcess():
             tempData2 = list(corBackData[data1EndLowCutOff: data1EndHighCutOff])
             tempData2.sort()
 
-            return corBackData /average(tempData2[1:-1])
+            return corBackData /abs(average(tempData2[1:-1]))
            
     
     def xref_corr(self, data1 , data1lowCutOff = 1,
@@ -72,11 +72,11 @@ class XasDataProcess():
        
         tempData1 = list(data1)
         tempData1.sort()
-        corData = (data1) #- average(tempData1[data1lowCutOff:data1highCutOff]))
+        corData = (data1) - average(tempData1[data1lowCutOff:data1highCutOff])
         if norm == "REF": 
             return corData /corData[0] 
         elif norm == "MAX": 
-            print "Max"
+            #print "Max"
             return corData/ max(corData)  
         elif norm == None: return corData
         else: 

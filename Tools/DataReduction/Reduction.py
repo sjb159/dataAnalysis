@@ -84,7 +84,7 @@ class Reduction(ReadWriteData, XasDataProcess):
         lResult = []
         lResultName = []
         for i,j in enumerate(lCpDataName[len(lScanableName)+1:]):
-            
+
             lResult.append( self.xmcd_w_corr(lCpData[0], lCnData[0], lCpData[i + len(lScanableName)+1], lCnData[i + len(lScanableName)+1]))
             lResultName.append("xmcd %s" %j)
         
@@ -99,6 +99,7 @@ class Reduction(ReadWriteData, XasDataProcess):
         lDataName = list(lScanableName)
         lDataName.insert(0, "/%s/%s" %(scanType,scanType))
         lMeta, lData = self.get_reduced_data(folder, scan, lDataName , lMetaName)
+        #print lData
         monitor = lData[-1]
         for i,j in enumerate (lScanableName[:-1]):
             lData.append(lData[i+1]/monitor)

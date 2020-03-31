@@ -23,15 +23,21 @@ lastScanNo = None
 timeOut = 0
 while timeOut < 24*3600:
     if newScanNo == lastScanNo:
-        lastScanNo = int(re.split("-|.nxs" ,sorted(os.listdir(folder))[-5])[1])
-        print lastScanNo
-        time.sleep(66.6666666)
-        timeOut = timeOut+66.66666666
-        newScanNo = int(re.split("-|.nxs" ,sorted(os.listdir(folder))[-5])[1])
+        try:
+            lastScanNo = int(re.split("-|.nxs" ,sorted(os.listdir(folder))[-5])[1])
+            #print lastScanNo
+            time.sleep(66.6666666)
+            timeOut = timeOut+66.66666666
+            newScanNo = int(re.split("-|.nxs" ,sorted(os.listdir(folder))[-5])[1])
+        except:
+            pass
     else:
-        dr.convert_nexus_ascii(range(newScanNo,lastScanNo-2,-1), folder, output)
-        lastScanNo = newScanNo
-        timeOut = 0
+        try:
+            dr.convert_nexus_ascii(range(newScanNo,lastScanNo-2,-1), folder, output)
+            lastScanNo = newScanNo
+            timeOut = 0
+        except:
+            pass
 
     
     
