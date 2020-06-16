@@ -7,6 +7,15 @@ from UniversalMoke import XrayMoke
 import timeit
 import numpy as np
 import matplotlib.pyplot as plt
+
+from Tools.Output.Output import Output
+
+
+Dp = Output() 
+
+Dp.add_clipboard_to_figures()
+
+
 i = complex(0,1)
 xrMoke = XrayMoke()
 
@@ -111,7 +120,7 @@ for gamma1 in hy:
     intensity9 = np.append(intensity9,xrMoke.get_intensity("RC", "Si+Pi"))
     
 elapsed = timeit.default_timer() - start_time1
-print elapsed
+print (elapsed)
 f.write("field, Pi-full, Si-full,Pi-Si, Pi-Pi, Si-Si, Si,-Pi, XMCD, LC,RC \n")
 for n in range (0,len(angle)):                
     f.write("%.8g , %.8g , %.8g, %.8g , %.8g , %.8g,, %.8g , %.8g , %.8g , %.8g \n"
