@@ -4,10 +4,10 @@ Created on 16 Aug 2019
 @author: wvx67826
 '''
 import matplotlib.pyplot as plt
-import io
+import sys
 from win32api import GetSystemMetrics
-from PySide.QtGui import QApplication, QImage
-
+from PyQt5.QtWidgets import QApplication
+from PyQt5.QtGui import QScreen,QImage, QPixmap
 
 class Output():
     def __init__(self):
@@ -46,20 +46,25 @@ class Output():
         # use monkey-patching to replace the original plt.figure() function with
         # our own, which supports clipboard-copying
         oldfig = plt.figure
-    
+        #sceen = QScreen()
         def newfig(*args, **kwargs):
             fig = oldfig(*args, **kwargs)
+            
             def clipboard_handler(event):
                 if event.key == 'ctrl+c':
                     # store the image in a buffer using savefig(), this has the
                     # advantage of applying all the default savefig parameters
                     # such as background color; those would be ignored if you simply
                     # grab the canvas using Qt
-                    buf = io.BytesIO()
-                    fig.savefig(buf)
-                    QApplication.clipboard().setImage(QImage.fromData(buf.getvalue()))
-                    buf.close()
-    
+                    #buf = io.BytesIO()
+                    #fig.savefig(buf)
+                    #img = QPixmap() 
+                    #img = QImage()
+                    size = fig.canvas.size()
+                    width, height = size.width(), size.height()
+                    im = QImage(fig.canvas.buffer_rgba(), width, height, QImage.Format_ARGB32)
+                    QApplication.clipboard().setImage(im)
+
             fig.canvas.mpl_connect('key_press_event', clipboard_handler)
             return fig
     
