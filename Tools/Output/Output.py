@@ -4,11 +4,9 @@ Created on 16 Aug 2019
 @author: wvx67826
 '''
 import matplotlib.pyplot as plt
-import sys
 from win32api import GetSystemMetrics
 from PyQt5.QtWidgets import QApplication
-from PyQt5.QtGui import QScreen,QImage, QPixmap
-
+from PyQt5.QtGui import QImage
 class Output():
     def __init__(self):
         pass
@@ -46,7 +44,7 @@ class Output():
         # use monkey-patching to replace the original plt.figure() function with
         # our own, which supports clipboard-copying
         oldfig = plt.figure
-        #sceen = QScreen()
+
         def newfig(*args, **kwargs):
             fig = oldfig(*args, **kwargs)
             

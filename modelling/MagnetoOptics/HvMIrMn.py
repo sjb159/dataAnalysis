@@ -20,28 +20,37 @@ i = complex(0,1)
 xrMoke = XrayMoke()
 
 ##============= Define sample gamma and beta ===============================
-n  = np.array([1.0,
-               1.0+3.31060E-03+2.05586E-03*i,
-               1.0+1.37849E-03+1.45084E-03*i,
-               1.0+1.37849E-03+1.45084E-03*i,
-               1.0+6.95156E-04+1.42226E-04*i,
-               1.0+7.53183E-04+9.51189E-05*i])
+n  = np.array([
+               1.0,
+               1.0+ 5.89E-04 + 1.62E-03*i,
+               1.0+ 1.16E-03 + 1.82E-03*i,
+               1.0+ 2.06E-03 + 3.07E-04*i,
+               1.0+ 2.06E-03 + 3.07E-04*i,
+               1.0+ 5.89E-04 + 1.62E-03*1, 
+               1.0 + 1.33E-03 + 1.61E-03*i 
+               ])
 
-d = np.array([0,
-              30.0,
-              40.0,
-              20.0,
-              20.0,
-              200])
+d = np.array([
+              0,
+              120.0,
+              69.1,
+              82.5,
+              150.0,
+              303.0,
+              100.0
+              ])
 
-q = np.array([0.0,
+q = np.array([
               0.0,
-              1.68661e-3+1.06361e-4*i,
-              1.68661e-3+1.06361e-4*i,
               0.0,
-              0.0])
-aPhi =   np.array([0.0, 0.0, 70.0, 90,0, 0.0, 0.0])
-aGamma = np.array([0.0, 0.0, 90.0, 90,0, 0.0, 0.0])
+              0.0,
+              5.03E-05 + 5.48E-06*i, 
+              0.0,
+              0.0,
+              0.0
+              ])
+aPhi =   np.array([0.0, 0.0, 0.0, 90,0, 0.0, 0.0, 0.0])
+aGamma = np.array([0.0, 0.0, 0.0, 90,0, 0.0, 0.0, 0.0])
 ##=================================================================================
 
 """To store result"""
@@ -57,7 +66,7 @@ intensity8 = np.array([])
 intensity9 = np.array([])
 
 """Define energy"""
-waveLen = 12.4/0.777198
+waveLen = 12.4/0.638
 """timer"""
 start_time1 = timeit.default_timer()
 
@@ -68,20 +77,22 @@ angle = np.arange(-100,100,1.0)
 angle = np.append(angle, np.arange(100,-100,-1.0))
 
 #spin = [45,-45] #right angle to beam
-spin = [0.0, 180.0, 0] #right angle to beam
+spin = [90.0, -90.0, 0.0 ] #right angle to beam
 
 #spin = [90,180] #parallel 
 hy = np.full((1,119),spin[0])
-hy = np.append(hy, spin[1])
+hy = np.append(hy, spin[2])
 hy = np.append(hy, np.full((1,199),spin[1]))
-hy = np.append(hy, spin[0])
+hy = np.append(hy, spin[2])
 hy = np.append(hy, np.full((1,80),spin[0]))
 
-thetaWanted =24.5
+lTheta = [4, 8, 12, 16, 20, 24, 28, 32]
+for angle in lTheta:
+    
+thetaWanted =18.0
 theta = 90 - thetaWanted 
 
-filename = "Pt_Cu_gamma_ra_fix%.f-fix%.f-%.f_th%.f.dat" %(aGamma[1],aGamma[2],aGamma[3],theta)
-f = open("TestData/"+filename, "w+")
+
 
 aGamma  = np.deg2rad(aGamma)
 theta = np.deg2rad(theta)
@@ -91,7 +102,7 @@ aPhi = np.deg2rad(aPhi)
 for gamma1 in hy:    
     #aPhi[1] = np.deg2rad(gamma1)
     #aPhi[2] = np.deg2rad(gamma1)
-    aGamma[2] = np.deg2rad(gamma1)
+    aGamma[3] = np.deg2rad(gamma1)
     #aGamma[4] = np.deg2rad(gamma1)
     """    if gamma1 ==spin[0]:
         aPhi[3] = np.deg2rad(14)
@@ -128,15 +139,16 @@ for n in range (0,len(angle)):
                intensity4[n],intensity5[n],intensity6[n],intensity7[n],intensity8[n]
                ,intensity9[n]))
 
-plt.figure(1)
+plt.figure()
+plt.title(theta)
 plt.subplot(221)
 #plt.semilogy()
 plt.title("Pi")
-plt.plot(angle, intensity3)
+plt.plot(angle, intensity1)
 #plt.figure(2)
 plt.subplot(222)
 plt.title("Si")
-plt.plot(angle, intensity5)
+plt.plot(angle, intensity2)
 #plt.figure(3)
 """plt.title("Pi-Si")
 plt.plot(angle, intensity3)
