@@ -7,7 +7,7 @@ from Tools import Tools
 import matplotlib.pyplot as plt
 import numpy as np
 from scipy.optimize import curve_fit
-from lmfit import Model
+from lmfit import Model 
 dr = Tools.ReadWriteData()
 Red = Tools.Output()
 Red.add_clipboard_to_figures()

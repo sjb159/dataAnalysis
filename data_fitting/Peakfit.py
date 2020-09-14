@@ -3,6 +3,7 @@ Created on 23 Oct 2019
 
 @author: wvx67826
 '''
+
 import matplotlib.pyplot as plt
 import numpy as np
 from scipy import signal 
@@ -18,7 +19,7 @@ data = dr.get_data()
 y = data["ifioft"]
 x = data["ddth"]
 peaks, _ = signal.find_peaks(y,  height = 0.01, width = 5)
-print peaks
+print (peaks)
 model_1 = models.GaussianModel(prefix='m1_')
 model_2 = models.GaussianModel(prefix='m2_')
 model_3 = models.GaussianModel(prefix='m3_')
@@ -61,8 +62,8 @@ params = params_1.update(params_4)
 params = params_1
 
 output = model.fit(y, params, x=x)
-print output.fit_report()
-print output.best_values["m1_amplitude"]*0.3183099/output.best_values["m1_sigma"]
+print (output.fit_report())
+print (output.best_values["m1_amplitude"]*0.3183099/output.best_values["m1_sigma"])
 fig, gridspec = output.plot(data_kws={'markersize': 1})
 
 

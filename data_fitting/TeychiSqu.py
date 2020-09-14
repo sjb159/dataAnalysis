@@ -3,14 +3,14 @@ Created on 29 Nov 2019
 
 @author: wvx67826
 '''
-from Tools import Tools 
+from Tools.ReadWriteData import ReadWriteData 
 import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib import ticker
+from Tools.Output.Output import Output
 
-
-dr = Tools.ReadWriteData()
-Red = Tools.Output()
+dr = ReadWriteData()
+Red = Output()
 Red.add_clipboard_to_figures()
 folder = "C:\\Users\\wvx67826\\Desktop\\Tey_Fit#\\"
 #read data 
@@ -73,7 +73,7 @@ for i in Tdfe:
 
 maximal_value = 11.5
 minimal_value = 0.5
-print y[np.argmin(chi)],y[np.argmin(chiCo)] 
+print (y[np.argmin(chi)],y[np.argmin(chiCo)] )
 plt.subplot(221)
 plt.title("Chi-Squ")
 plt.tricontourf(x, y , chi, 130,interp = 'linear', cmap=plt.get_cmap('jet'), vmax = maximal_value)

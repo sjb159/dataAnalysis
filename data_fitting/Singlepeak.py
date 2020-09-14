@@ -40,7 +40,7 @@ def fitData(x,y):
     """
 
 
-    params_1.update(params_4)
+    params_1.update(params_4) 
 #    params_1.update(params_5) 
     
     params = params_1

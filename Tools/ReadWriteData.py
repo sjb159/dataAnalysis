@@ -1,36 +1,25 @@
 '''
 Created on 19 Jul 2017
-
 @author: wvx67826
-
 Read and write data. 
-
 For ascii format:
 Read_file(filename)
     
 get_meta_value(self, metaName):
-
 get_data(self):
 return ascii formate data
-
 Nexus format:
-
 read_nexus_data(self,folder, filename):
-
 get_nexus_meta(self, subBranch, nData = 0, mainBranch ="/entry1/before_scan"):
 retrun nexus meta data 
-
 get_nexus_data(self, subBranch, nData = 0, mainBranch ="/entry1/instrument" ):
-
 get_scan_type(self, subBranch = "/scan_command", nData = 0, mainBranch ="/entry1" ):
 get list of data 
-
 write_ascii(self, filename, names, data)
     write data to file
     file name = output file name
     names are the name list for the column data
     list of data 
-
 '''
 import numpy as np
 import h5py    # HDF5 support
@@ -43,17 +32,17 @@ class ReadWriteData():
         self.data = []
         self.nexusData = []
 #============================= old ascii format=======================================
-    def read_file(self, filename):
+    def read_file(self, filename, meta = True, metaStopKey = "&END"):
         with  open(filename,'r') as f:
-            meta = True
+            #meta = True
             tMeta = []
             tData = []
             # break up the meta and data
             for line in f:
-                tMeta.append(line) 
+                if meta: tMeta.append(line) 
                 if not meta:
-                    tData.append(line) 
-                if " &END" in line:
+                    tData.append(line)
+                if metaStopKey in line:
                     meta = False
             self.metadata = tMeta
             self.data = tData
@@ -67,7 +56,7 @@ class ReadWriteData():
         #return np.genfromtxt(self.data, names = True, delimiter = "\t")
         return ascii.read(self.data, delimiter='\t')
     
-        #ascii.read(tData,delimiter=',')
+        #return ascii.read(self.Data,delimiter=',')
 
 #============================= nexus =============================================
     def read_nexus_data(self,folder, filename):
@@ -154,7 +143,7 @@ class ReadWriteData():
         filen = folder+ beamlineFile
         if filename[0:4] == beamlineFile:
             filename = filename[4:-4] #cutting the file name to fit read nexus
-        print filename
+        print (filename)
         self.read_nexus_data(filen,filename)
         fulloutputname = "%s%s.dat" %(outputFolder,filename)
         
@@ -164,12 +153,12 @@ class ReadWriteData():
             fulloutputname = "%s%s.dat" %(outputFolder,filename)
             self.nexus2ascii(fulloutputname)
         except:
-            print "failed %s" %filename
+            print ("failed %s" %filename)
     
     def convert_nexus_ascii(self,scanNo, folder, outputFolder): #this either run the whole folder or a range of scan numbers for conversion
         if isinstance(scanNo, (list,)):
             for filename in scanNo:
-                print filename
+                #print filename
                 self.check_nexus_data(folder, outputFolder,str(filename) )
     
         if scanNo == folder:
@@ -206,5 +195,4 @@ class ReadWriteData():
 
 """---------------------------------Reduction----------------------------------------------------------"""        
         
-        
-        
+ 

@@ -10,7 +10,7 @@ from Tools import Tools  # import the i10 Tools for data
 import matplotlib.pyplot as plt # this is for ploting graph
 
 import numpy as np # For maths
-
+ 
 from scipy.optimize import curve_fit # for the chi-squ fitting
 from scipy.stats import chisquare
 from lmfit import Model 
