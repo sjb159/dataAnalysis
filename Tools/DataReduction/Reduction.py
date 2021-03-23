@@ -63,10 +63,10 @@ class Reduction(ReadWriteData, XasDataProcess):
         scanType = self.scans_info(folder, scanNo)[1]
         if "energy" in scanType:
             return self.__corr_xas_data__(folder, scanNo, lScanableName, lMetaName, scanType, cutoffs)
-        else: print "Not energy scan"
+        else: print ("Not energy scan")
         # return lDataName, lData, lMetaName, lMeta
     
-    def get_xmcd(self, folder, lScanPair, lScanableName = None, lMetaName = None, cutoffs = [2,7,-7,-2]):
+    def get_xmcd_old(self, folder, lScanPair, lScanableName = None, lMetaName = None, cutoffs = [2,7,-7,-2]):
         
         for scan in lScanPair:
             scanType = self.scans_info(folder, scan)[1]
@@ -80,7 +80,7 @@ class Reduction(ReadWriteData, XasDataProcess):
             elif "ver" in scanType:
                 lCnDataName, lCnData, lCnMetaName, lCnMeta = self.__corr_xas_data__(folder, scan, lScanableName, lMetaName, scanType, cutoffs)    
             
-            else: print "not circular energy scan"
+            else: print ("not circular energy scan")
         lResult = []
         lResultName = []
         for i,j in enumerate(lCpDataName[len(lScanableName)+1:]):
@@ -93,8 +93,38 @@ class Reduction(ReadWriteData, XasDataProcess):
         lFinalData     = vstack((lCpData, lCnData, lResult))
        
         return lFinalDataName, lFinalData , lCpMetaName, lCpMeta, lCnMetaName, lCnMeta
+    
+        def get_xmcd(self, folder, lScanPair, lScanableName = None, lMetaName = None, cutoffs = [2,7,-7,-2]):
+        
+            for scan in lScanPair:
+                data = self.read_nexus_data(folder, scan)
+                scanType = data.get_meta_value("/pol/value")
+                if "pc" in scanType:
+                    lCpDataName, lCpData, lCpMetaName, lCpMeta = self.__corr_xas_data__(folder, scan, lScanableName, lMetaName, scanType, cutoffs)
+                elif "nc" in scanType:
+                    lCnDataName, lCnData, lCnMetaName, lCnMeta = self.__corr_xas_data__(folder, scan, lScanableName, lMetaName, scanType, cutoffs)
+                    
+                elif "lh" in scanType:
+                    lCpDataName, lCpData, lCpMetaName, lCpMeta = self.__corr_xas_data__(folder, scan, lScanableName, lMetaName, scanType, cutoffs)
+                elif "lv" in scanType:
+                    lCnDataName, lCnData, lCnMetaName, lCnMeta = self.__corr_xas_data__(folder, scan, lScanableName, lMetaName, scanType, cutoffs)    
+                
+                else: print ("not circular energy scan")
+            lResult = []
+            lResultName = []
+            for i,j in enumerate(lCpDataName[len(lScanableName)+1:]):
+                
+                lResult.append( self.xmcd_w_corr(lCpData[0], lCnData[0], lCpData[i + len(lScanableName)+1], lCnData[i + len(lScanableName)+1]))
+                lResultName.append("xmcd %s" %j)
+            
+            
+            lFinalDataName = hstack((lCpDataName, lCnDataName, lResultName))
+            lFinalData     = vstack((lCpData, lCnData, lResult))
+           
+            return lFinalDataName, lFinalData , lCpMetaName, lCpMeta, lCnMetaName, lCnMeta
         
         
+            
     def __corr_xas_data__(self,folder, scan, lScanableName, lMetaName, scanType, cutoffs):
         lDataName = list(lScanableName)
         lDataName.insert(0, "/%s/%s" %(scanType,scanType))

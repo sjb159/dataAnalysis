@@ -67,16 +67,19 @@ class ReadWriteData():
         #subBranch = "/"+subBranch+"/"+subBranch
         if nData == 0:
             nData = self.nexusData
-        return nData[mainBranch + subBranch].value
+        #return nData[mainBranch + subBranch][()]
+        #print (nData[(mainBranch + subBranch)][()])
+        return nData[(mainBranch + subBranch)][()]
+        
     
     def get_nexus_data(self, subBranch, nData = 0, mainBranch ="/entry1/instrument" ):
         if nData == 0:
             nData = self.nexusData       
-        return nData[mainBranch + subBranch].value
+        return nData[(mainBranch + subBranch)][()]
     def get_scan_type(self, subBranch = "/scan_command", nData = 0, mainBranch ="/entry1" ):
         if nData == 0:
             nData = self.nexusData
-        temp = nData[mainBranch + subBranch].value.split()[1]          
+        temp = nData[mainBranch + subBranch][()].split()[1]          
         return temp
 
     def write_ascii(self, filename, names, data, metaName = False, meta = False ):
@@ -106,7 +109,7 @@ class ReadWriteData():
             meta = "%s%s" %(metaKey, key)
             for key1 in k[meta]:
                 meta1  = meta +"/%s" %key1
-                metaData.append("%s = %s" %(key1,k[meta1].value ))
+                metaData.append("%s = %s" %(key1,k[meta1][()] ))
         
         for key in k[dataKey]:
             tempData = "%s%s" %(dataKey, key)
@@ -121,7 +124,7 @@ class ReadWriteData():
                         tempData1  = tempData +"/%s" %key1
                         tempName = "%s/%s" %(key, key1)
                         names.append(tempName)
-                        data.append(k[tempData1].value )
+                        data.append(k[tempData1][()] )
         f = open(outPutFilename, 'w+')
         for i in metaData:
             f.write("%s\n" %i)   

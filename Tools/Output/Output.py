@@ -36,9 +36,9 @@ class Output():
                     pass 
                 elif logY:
                     plt.semilogy()
-        plt.draw()
+        #plt.draw()
         #fig =  plt.gcf()    
-        plt.close()
+        #plt.close()
         return fig
     def add_clipboard_to_figures(self):
         # use monkey-patching to replace the original plt.figure() function with

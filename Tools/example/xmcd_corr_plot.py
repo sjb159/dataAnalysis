@@ -10,7 +10,7 @@ Created on 16 Aug 2019
 
 '''
 from Tools.DataReduction.Reduction import Reduction
-from Tools.Tools import Output
+from Tools.Output.Output import Output
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -48,31 +48,33 @@ lData = ["/mcsr17_g/data","/mcsr18_g/data", "/mcsr19_g/data", "/mcsr16_g/data"]
 plotList = ["/mcsr17_g/data corrected", "/mcsr18_g/data corrected", "xmcd /mcsr17_g/data corrected", "xmcd /mcsr18_g/data corrected",
             "/mcsr19_g/data corrected", "xmcd /mcsr19_g/data corrected"]
 
-for scanNo in range (597913,597978,2):#597978
+for scanNo in range (597913,597915,2):#597978
     plt.figure()
     lScanNo = [scanNo, scanNo+1]
     cutoffs = [10,20,-20,-10]
     
-    lFinalDataName, lFinalData , lCpMetaName, lCpMeta, lCnMetaName, lCnMeta = Rd.get_xmcd(folder, lScanNo, lData, lMeta,cutoffs) 
+    lFinalDataName, lFinalData , lCpMetaName, lCpMeta, lCnMetaName, lCnMeta = Rd.get_xmcd_old(folder, lScanNo, lData, lMeta,cutoffs) 
    
     lCpMeta = np.append(lCpMeta, 0.1)
     sampleName = whichSample(lCpMeta[1],lCpMeta[2])
     tempName = "/%s/%s" %(sampleName,sampleName)
     lCpMetaName = np.append(lCpMetaName, tempName)
     
-    f1 = Dp.draw_plot([lFinalData[0],lFinalData[(len(lFinalData)-3)/2-1]],  lFinalData,  lFinalDataName, plotList, lCpMeta, lCpMetaName )
+    temp = int(((len(lFinalData)-3)/2))-1
+    print(temp)
+    f1 = Dp.draw_plot([lFinalData[0],lFinalData[temp]],  lFinalData,  lFinalDataName, plotList )
     f1.show()
     
-    if lCnMeta[3]<1:
+    """    if lCnMeta[3]<1:
         fileName = output + "%s_%s_HMax.dat" %(sampleName,lCpMeta[0])
     elif lCnMeta[3]>17:
-        fileName = output + "%s_Hmin.dat" %(sampleName,lCpMeta[0])
-    Rd.write_ascii(fileName, lFinalDataName, lFinalData, lCnMetaName, lCnMeta)
+        fileName = output + "%s_Hmin.dat" %(sampleName,lCpMeta[0])"""
+    #Rd.write_ascii(fileName, lFinalDataName, lFinalData, lCnMetaName, lCnMeta)
     
-    fileName =  fileName[:fileName.find(sampleName)] + "\\fig\\"+ fileName[fileName.find(sampleName):]
-    f1.savefig("%s.jpg" %(fileName[:-4]))
+    #fileName =  fileName[:fileName.find(sampleName)] + "\\fig\\"+ fileName[fileName.find(sampleName):]
+    #f1.savefig("%s.jpg" %(fileName[:-4]))
     #print lFinalDataName
-    plt.close()
+    #plt.close()
 #temp = "name"
 #
 

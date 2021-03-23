@@ -4,28 +4,29 @@ Created on 24 Jun 2019
 @author: wvx67826
 '''
 
-from Tools import Tools
+#from Tools.ReadWriteData import ReadWriteData
 from Tools.I10DataReduction import I10DataReduction
 import matplotlib.pyplot as plt
 import numpy as np
 
+from Tools.DataReduction import AngleToQ 
 #rd = Tools.ReadWriteData()
 dr = I10DataReduction()
-a2q = Tools.AngleToQ()
-folder = "Z:/2019/cm22968-3/i10-"
+a2q = AngleToQ()
+folder = "Z:\\2020\\cm26456-4\\i10-"#-pixis-files
 lEscan = []
 lRef = []
-lBadScan = range(546531,546533)
-temp = [546457,546514,546699,546696,546731,546736,546739,546740, 546741]+range(546712,546718) +range(546720,546731) +range(546748,546753)
+lBadScan = range(608868)
+temp = range(608436, 608867)
 lBadScan = lBadScan +temp# .append(546699)
 #print lBadScan
 
 
 #============================      This part read out the scan numbers for different scans ===============================
-for i, scanNo in enumerate ([546455,546474,546509]): #(range (546455,546509)): #546522-546572,(range (546638,546976) 
+for i, scanNo in enumerate (range(608436, 608867)): #(range (546455,546509)): #546522-546572,(range (546638,546976) 
     #print scanNo
     if (int(scanNo) in lBadScan):
-        print "Passing escan"
+        print ("Passing escan")
         
     else:
         dr.tools.read_nexus_data(folder, scanNo)
@@ -41,7 +42,7 @@ for i, scanNo in enumerate ([546455,546474,546509]): #(range (546455,546509)): #
         if scanType == "th":
             energy = dr.tools.get_nexus_meta("/pgm_energy/pgm_energy")
             if 643>float(energy)>641.7: 
-                print "alignment scan"
+                print ("alignment scan")
             else:
                 temperature = dr.tools.get_nexus_meta("/ls340/Channel0Temp")
                 sx = dr.tools.get_nexus_meta("/sx/sx")
@@ -56,9 +57,9 @@ output = "C:\\All my tools\\java-mars\\pyworkspace\\dataAnalysis\\Experiment\\ol
 meta = ["/sx/sx","/ls340/Channel0Temp","/th/th"]
 #print lEscan,lBadScan
 for i, escan in enumerate (lEscan[:]):
-    print escan[0]
+    print (escan[0])
     if (float(escan[0]) in lBadScan):
-        print "Passing escan"
+        print ("Passing escan")
     elif float(escan[2])<540:
         pass
     elif escan[1] == "pc":
@@ -73,10 +74,10 @@ for i, escan in enumerate (lEscan[:]):
 
 meta = ["/sx/sx","/ls340/Channel0Temp","/pgm_energy/pgm_energy"]
 for i, escan in enumerate (lRef[:]):
-    print escan[0]
+    print (escan[0])
     
     if int(escan[0]) in lBadScan:
-        print "Passing escan"
+        print ("Passing escan")
     elif escan[1] == "pc":
         dr.tools.read_nexus_data(folder,escan[0])
         energy = dr.tools.get_nexus_meta("/pgm_energy/pgm_energy")

@@ -24,7 +24,7 @@ norm_data(self,data1,data2)
 
 
 '''
-from numpy import average, cos, sin, deg2rad, pi, interp, max
+from numpy import average, cos, sin, deg2rad, pi, interp, max,min,append
 from numpy.polynomial.polynomial import polyval, polyfit 
 from scipy.optimize import curve_fit
 
@@ -76,7 +76,7 @@ class XasDataProcess():
         if norm == "REF": 
             return corData /corData[0] 
         elif norm == "MAX": 
-            print "Max"
+            print ("Max")
             return corData/ max(corData)  
         elif norm == None: return corData
         else: 
@@ -120,4 +120,19 @@ class DataCorrection():
         return (absLen/sin(theta))/((absLen/sin(theta))+1.0/eeLen) + c
     def fit_drain_ref(self,dataX,dataY):
         return curve_fit(self.drain_ref,dataX,dataY)
+    #take x-y data and two region fit the region with straight line and subtract it
+    def sub_Straight_Line(self,dataX,dataY,fitRegion):
+        dataY = dataY - min(dataY)
+        dataXStart = dataX[fitRegion[0]:fitRegion[1]] 
+        dataXStart = append(dataXStart,dataX[fitRegion[2]:fitRegion[3]])
+        dataYStart = dataY[fitRegion[0]:fitRegion[1]] 
+        dataYStart = append(dataYStart,dataY[fitRegion[2]:fitRegion[3]])
+        mc =self.poly_fit(dataXStart, dataYStart)
+        xStart = dataX
+        cStart=  self.gen_poly(xStart, mc)
+        return dataY- cStart  
+    
+    
+    
+    
     
