@@ -41,7 +41,6 @@ class Reduction(ReadWriteData, XasDataProcess):
         lMeta = []
         
         self.read_nexus_data(folder, scanNo)
-        
         for i in lScanableName:
             lData.append(self.get_nexus_data(i))
         for i in lMetaName:
@@ -94,11 +93,11 @@ class Reduction(ReadWriteData, XasDataProcess):
        
         return lFinalDataName, lFinalData , lCpMetaName, lCpMeta, lCnMetaName, lCnMeta
     
-        def get_xmcd(self, folder, lScanPair, lScanableName = None, lMetaName = None, cutoffs = [2,7,-7,-2]):
+    def get_xmcd(self, folder, lScanPair, lScanableName = None, lMetaName = None, cutoffs = [2,7,-7,-2]):
         
             for scan in lScanPair:
                 data = self.read_nexus_data(folder, scan)
-                scanType = data.get_meta_value("/pol/value")
+                scanType = self.get_nexus_meta("/pol/pol",nData =data)
                 if "pc" in scanType:
                     lCpDataName, lCpData, lCpMetaName, lCpMeta = self.__corr_xas_data__(folder, scan, lScanableName, lMetaName, scanType, cutoffs)
                 elif "nc" in scanType:
@@ -127,14 +126,14 @@ class Reduction(ReadWriteData, XasDataProcess):
             
     def __corr_xas_data__(self,folder, scan, lScanableName, lMetaName, scanType, cutoffs):
         lDataName = list(lScanableName)
-        lDataName.insert(0, "/%s/%s" %(scanType,scanType))
+        lDataName.insert(0, "/energy/energy")
         lMeta, lData = self.get_reduced_data(folder, scan, lDataName , lMetaName)
         monitor = lData[-1]
         for i,j in enumerate (lScanableName[:-1]):
             lData.append(lData[i+1]/monitor)
             lDataName.append("%s norm" %j)
             # the only different beteen the two is xref normalise to the first data point.
-            if "energy" in scanType:
+            if scanType in ["pc","nc"] :
                 lData.append(self.xas_corr(lData[-1], data1lowCutOff = cutoffs[0],
                                                   data1highCutOff = cutoffs[1],
                                                    data1EndLowCutOff = cutoffs[2],

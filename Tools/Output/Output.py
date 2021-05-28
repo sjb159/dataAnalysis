@@ -11,7 +11,7 @@ class Output():
     def __init__(self):
         pass
     
-    def draw_plot(self, x, lY, lYName, lYNameUse = None, lMeta = None, lMetaName=None, logY = False):
+    def draw_plot(self, x, lY, lYName, lYNameUse = None, lMeta = None, lMetaName=None, logY = False, blocking = False):
     
         if lYNameUse == None: lYNameUse = lYName
         myDpi = 100
@@ -22,6 +22,7 @@ class Output():
         if (lMetaName != None and lMeta != None):
             title = ""
             for i,j in enumerate (lMetaName):
+                print(lMeta[i])
                 title = title + "%s=%.2f " %(j.split("/")[-1], lMeta[i])
             plt.suptitle(title)
         
@@ -36,9 +37,10 @@ class Output():
                     pass 
                 elif logY:
                     plt.semilogy()
-        #plt.draw()
-        #fig =  plt.gcf()    
-        #plt.close()
+        fig.tight_layout()
+        plt.draw()
+        fig =  plt.gcf()    
+        plt.show(block = blocking)
         return fig
     def add_clipboard_to_figures(self):
         # use monkey-patching to replace the original plt.figure() function with

@@ -61,7 +61,6 @@ for scanNo in range (597913,597915,2):#597978
     lCpMetaName = np.append(lCpMetaName, tempName)
     
     temp = int(((len(lFinalData)-3)/2))-1
-    print(temp)
     f1 = Dp.draw_plot([lFinalData[0],lFinalData[temp]],  lFinalData,  lFinalDataName, plotList )
     f1.show()
     

@@ -25,6 +25,7 @@ import numpy as np
 import h5py    # HDF5 support
 import os
 from astropy.io import ascii
+from PIL import Image
 
 class ReadWriteData():
     def __init__(self):
@@ -194,6 +195,12 @@ class ReadWriteData():
     def get_single_hdf5_image(self, subBranch = "/pixistiff/image_data", nData = None, mainBranch ="/entry1" ):
         image = np.array( nData[mainBranch + subBranch])
         return image
+    
+    #save image when went a 2d array is given
+    def write_image(self, outPutFilename, data, imageTpye = "TIFF"):
+        im = Image.fromarray(data) # float32
+        im.save("%s.%s" %(outPutFilename,imageTpye), imageTpye)
+        
 
 
 """---------------------------------Reduction----------------------------------------------------------"""        
